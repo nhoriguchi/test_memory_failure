@@ -1,27 +1,29 @@
 #!/bin/bash
 
-RELEASE=""
+DISTRO=""
 THPDIR=""
 KHPDDIR=""
-# if [[ `cat /etc/system-release` =~ "Red Hat Enterprise Linux .* release 6" ]] ; then
-if grep "Red Hat Enterprise Linux.*release 6" /etc/system-release > /dev/null ; then
-    RELEASE="RHEL6"
+
+# if grep "Red Hat Enterprise Linux.*release 6" /etc/system-release > /dev/null ; then
+if uname -r  | grep "\.el6" > /dev/null ; then
+    DISTRO="RHEL6"
     THPDIR="/sys/kernel/mm/redhat_transparent_hugepage"
     KHPDDIR="/sys/kernel/mm/redhat_transparent_hugepage/khugepaged"
-elif grep "Red Hat Enterprise Linux.*release 7" /etc/system-release > /dev/null ; then
-    RELEASE="RHEL7"
+elif uname -r  | grep "\.el7" > /dev/null ; then
+    DISTRO="RHEL7"
     THPDIR="/sys/kernel/mm/transparent_hugepage"
     KHPDDIR="/sys/kernel/mm/transparent_hugepage/khugepaged"
-elif grep "Fedora release" /etc/system-release > /dev/null ; then
-    RELEASE="Fedora"
+elif uname -r  | grep "\.fc[12][0-9]" > /dev/null ; then
+    DISTRO="Fedora"
     THPDIR="/sys/kernel/mm/transparent_hugepage"
     KHPDDIR="/sys/kernel/mm/transparent_hugepage/khugepaged"
 else
-    echo "Unknown release. abort" >&2
-    exit 1
+    DISTRO="upstream"
+    THPDIR="/sys/kernel/mm/transparent_hugepage"
+    KHPDDIR="/sys/kernel/mm/transparent_hugepage/khugepaged"
 fi
 
-RHELOPT="" ; [ "$RELEASE" = "RHEL6" ] && RHELOPT="-R"
+RHELOPT="" ; [ "$DISTRO" = "RHEL6" ] && RHELOPT="-R"
 
 [ ! -d "$THPDIR" ] && echo "Kernel not support thp." >&2 && exit 1
 
@@ -35,7 +37,9 @@ ulimit -s unlimited
 get_thp()         { cat $THPDIR/enabled; }
 set_thp_always()  { echo "always" > $THPDIR/enabled; }
 set_thp_madvise() {
-    [ "$RELEASE" = "Fedora" ] && echo "madvise" > $THPDIR/enabled;
+    if [ "$DISTRO" == "Fedora" ] || [ "$DISTRO" == "upstream" ] ; then
+        echo "madvise" > $THPDIR/enabled;
+    fi
 }
 set_thp_never()   { echo "never" > $THPDIR/enabled; }
 get_thp_defrag()  { cat $THPDIR/defrag; }
@@ -56,7 +60,7 @@ get_khpd_pages_collapsed()       { cat $KHPDDIR/pages_collapsed; }
 set_khpd_alloc_sleep_millisecs() { echo $1 > $KHPDDIR/alloc_sleep_millisecs; }
 set_khpd_defrag()                {
     local val=$1
-    if [ "$RELEASE" = "RHEL6" ] ; then
+    if [ "$DISTRO" = "RHEL6" ] ; then
         [ "$val" -eq 0 ] && val="no" || val="yes"
     fi
     echo $val > $KHPDDIR/defrag;
