@@ -1,7 +1,12 @@
 #!/bin/bash
 
 HUGETLBDIR=`grep hugetlbfs /proc/mounts | head -n1 | cut -f2 -d' '`
-[ ! -d "${HUGETLBDIR}" ] && echo "hugetlbfs not mounted." >&2 && exit 1
+if [ ! -d "${HUGETLBDIR}" ] ; then
+    mount -t hugetlbfs none /dev/hugepages
+    if [ $? -ne 0 ] ; then
+        echo "hugetlbfs not mounted." >&2 && exit 1
+    fi
+fi
 THUGETLB=`dirname $BASH_SOURCE`/thugetlb
 [ ! -x "$THUGETLB" ] && echo "thugetlb not found." >&2 && exit 1
 
