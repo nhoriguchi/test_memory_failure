@@ -1,0 +1,144 @@
+KERNEL_SRC=/src/linux-dev
+. test_core/lib/setup_mce_tools.sh
+
+DEFAULT_TEST_PREPARE=prepare_test
+DEFAULT_TEST_CLEANUP=cleanup_test
+
+. setup_thp_test.sh
+
+DEFAULT_TEST_CONTROLLER=control_thp
+DEFAULT_TEST_CHECKER=check_thp
+ERROR_TYPE=mce-srao
+
+ERROR_OFFSET=0
+
+TEST_TITLE="thp mce-srao head later-access"
+EXPECTED_RETURN_CODE="START THP_ALLOC_SUCCEED ACCESS KILLED"
+TEST_PROGRAM="${TTHP} -c"
+do_test_sync
+
+TEST_TITLE="thp mce-srao head avoid-access"
+EXPECTED_RETURN_CODE="START THP_ALLOC_SUCCEED EXIT"
+TEST_PROGRAM="${TTHP} -c -A"
+do_test_sync
+
+ERROR_OFFSET=1
+
+TEST_TITLE="thp mce-srao tail later-access"
+EXPECTED_RETURN_CODE="START THP_ALLOC_SUCCEED ACCESS KILLED"
+TEST_PROGRAM="${TTHP} -c"
+do_test_sync
+
+TEST_TITLE="thp mce-srao tail avoid-access"
+EXPECTED_RETURN_CODE="START THP_ALLOC_SUCCEED EXIT"
+TEST_PROGRAM="${TTHP} -c -A"
+do_test_sync
+
+
+ERROR_TYPE=hard-offline
+
+ERROR_OFFSET=0
+
+TEST_TITLE="thp hard-offline head later-access"
+EXPECTED_RETURN_CODE="START THP_ALLOC_SUCCEED ACCESS KILLED"
+TEST_PROGRAM="${TTHP} -c"
+do_test_sync
+
+TEST_TITLE="thp hard-offline head avoid-access"
+EXPECTED_RETURN_CODE="START THP_ALLOC_SUCCEED EXIT"
+TEST_PROGRAM="${TTHP} -c -A"
+do_test_sync
+
+ERROR_OFFSET=1
+
+TEST_TITLE="thp hard-offline tail later-access"
+EXPECTED_RETURN_CODE="START THP_ALLOC_SUCCEED ACCESS KILLED"
+TEST_PROGRAM="${TTHP} -c"
+do_test_sync
+
+TEST_TITLE="thp hard-offline tail avoid-access"
+EXPECTED_RETURN_CODE="START THP_ALLOC_SUCCEED EXIT"
+TEST_PROGRAM="${TTHP} -c -A"
+do_test_sync
+
+
+ERROR_TYPE=soft-offline
+DEFAULT_TEST_CHECKER=check_thp_soft_offline
+
+ERROR_OFFSET=0
+
+TEST_TITLE="thp soft-offline head later-access"
+EXPECTED_RETURN_CODE="START THP_ALLOC_SUCCEED ACCESS EXIT"
+TEST_PROGRAM="${TTHP} -c"
+do_test_sync
+
+TEST_TITLE="thp soft-offline head avoid-access"
+EXPECTED_RETURN_CODE="START THP_ALLOC_SUCCEED EXIT"
+TEST_PROGRAM="${TTHP} -c -A"
+do_test_sync
+
+ERROR_OFFSET=1
+
+TEST_TITLE="thp soft-offline tail later-access"
+EXPECTED_RETURN_CODE="START THP_ALLOC_SUCCEED ACCESS EXIT"
+TEST_PROGRAM="${TTHP} -c"
+do_test_sync
+
+TEST_TITLE="thp soft-offline tail avoid-access"
+EXPECTED_RETURN_CODE="START THP_ALLOC_SUCCEED EXIT"
+TEST_PROGRAM="${TTHP} -c -A"
+do_test_sync
+
+
+DEFAULT_TEST_CHECKER=check_thp
+ERROR_TYPE=madv_hard
+ERROR_OFFSET=0
+
+TEST_TITLE="thp madv_hard head later-access"
+EXPECTED_RETURN_CODE="START THP_ALLOC_SUCCEED ACCESS KILLED"
+TEST_PROGRAM="${TTHP} -H"
+do_test_sync
+
+TEST_TITLE="thp madv_hard head avoid-access"
+EXPECTED_RETURN_CODE="START THP_ALLOC_SUCCEED EXIT"
+TEST_PROGRAM="${TTHP} -H -A"
+do_test_sync
+
+ERROR_OFFSET=1
+
+TEST_TITLE="thp madv_hard tail later-access"
+EXPECTED_RETURN_CODE="START THP_ALLOC_SUCCEED ACCESS KILLED"
+TEST_PROGRAM="${TTHP} -H"
+do_test_sync
+
+TEST_TITLE="thp madv_hard tail avoid-access"
+EXPECTED_RETURN_CODE="START THP_ALLOC_SUCCEED EXIT"
+TEST_PROGRAM="${TTHP} -H -A"
+do_test_sync
+
+
+DEFAULT_TEST_CHECKER=check_thp_soft_offline
+ERROR_TYPE=madv_soft
+ERROR_OFFSET=0
+
+TEST_TITLE="thp madv_soft head later-access"
+EXPECTED_RETURN_CODE="START THP_ALLOC_SUCCEED ACCESS EXIT"
+TEST_PROGRAM="${TTHP} -S"
+do_test_sync
+
+TEST_TITLE="thp madv_soft head avoid-access"
+EXPECTED_RETURN_CODE="START THP_ALLOC_SUCCEED EXIT"
+TEST_PROGRAM="${TTHP} -S -A"
+do_test_sync
+
+ERROR_OFFSET=1
+
+TEST_TITLE="thp madv_soft tail later-access"
+EXPECTED_RETURN_CODE="START THP_ALLOC_SUCCEED ACCESS EXIT"
+TEST_PROGRAM="${TTHP} -S"
+do_test_sync
+
+TEST_TITLE="thp madv_soft tail avoid-access"
+EXPECTED_RETURN_CODE="START THP_ALLOC_SUCCEED EXIT"
+TEST_PROGRAM="${TTHP} -S -A"
+do_test_sync

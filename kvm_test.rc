@@ -1,0 +1,79 @@
+KERNEL_SRC=/src/linux-dev
+. test_core/lib/setup_mce_tools.sh
+. test_core/lib/setup_kvm_base.sh
+
+# you should give these
+export VM=
+export VMIP=
+export PASSWD=
+
+DEFAULT_TEST_PREPARE=prepare_test
+DEFAULT_TEST_CLEANUP=cleanup_test
+
+. setup_kvm_test.sh
+
+DEFAULT_TEST_CONTROLLER=control_kvm
+DEFAULT_TEST_CHECKER=check_kvm
+
+ERROR_TYPE=mce-srao
+
+TEST_TITLE="kvm panic"
+EXPECTED_RETURN_CODE="START GOT_HPA GUEST_PANICKED"
+TARGET_PAGETYPES="dirty,lru,mmap,anonymous=lru,mmap"
+TEST_CONTOLLER=control_kvm_panic
+TEST_CHECKER=check_kvm_panic
+do_test_async
+
+ERROR_TYPE=mce-srao
+
+TEST_TITLE="kvm clean_pagecache mce-srao"
+EXPECTED_RETURN_CODE="START GOT_HPA GUEST_ALIVE GUEST_PROC_ALIVE"
+TARGET_PAGETYPES="dirty,lru,mmap,anonymous=lru,mmap"
+do_test_async
+
+TEST_TITLE="kvm dirty_pagecache mce-srao"
+EXPECTED_RETURN_CODE="START GOT_HPA GUEST_ALIVE GUEST_PROC_ALIVE GUEST_PROC_KILLED_LATER_ACCESS"
+TARGET_PAGETYPES="dirty,lru,mmap,anonymous=dirty,lru,mmap"
+do_test_async
+
+TEST_TITLE="kvm anonymous mce-srao"
+EXPECTED_RETURN_CODE="START GOT_HPA GUEST_ALIVE GUEST_PROC_ALIVE GUEST_PROC_KILLED_LATER_ACCESS"
+TARGET_PAGETYPES="lru,mmap,anonymous=lru,mmap,anonymous"
+do_test_async
+
+
+ERROR_TYPE=hard-offline
+
+TEST_TITLE="kvm clean_pagecache hard-offline"
+EXPECTED_RETURN_CODE="START GOT_HPA GUEST_ALIVE GUEST_PROC_ALIVE"
+TARGET_PAGETYPES="dirty,lru,mmap,anonymous=lru,mmap"
+do_test_async
+
+TEST_TITLE="kvm dirty_pagecache hard-offline"
+EXPECTED_RETURN_CODE="START GOT_HPA GUEST_ALIVE GUEST_PROC_ALIVE GUEST_PROC_KILLED_LATER_ACCESS"
+TARGET_PAGETYPES="dirty,lru,mmap,anonymous=dirty,lru,mmap"
+do_test_async
+
+TEST_TITLE="kvm anonymous hard-offline"
+EXPECTED_RETURN_CODE="START GOT_HPA GUEST_ALIVE GUEST_PROC_ALIVE GUEST_PROC_KILLED_LATER_ACCESS"
+TARGET_PAGETYPES="lru,mmap,anonymous=lru,mmap,anonymous"
+do_test_async
+
+
+ERROR_TYPE=soft-offline
+DEFAULT_TEST_CHECKER=check_kvm_soft_offline
+
+TEST_TITLE="kvm clean_pagecache soft-offline"
+EXPECTED_RETURN_CODE="START GOT_HPA GUEST_ALIVE GUEST_PROC_ALIVE GUEST_PROC_ALIVE_LATER_ACCESS "
+TARGET_PAGETYPES="dirty,lru,mmap,anonymous=lru,mmap"
+do_test_async
+
+TEST_TITLE="kvm dirty_pagecache soft-offline"
+EXPECTED_RETURN_CODE="START GOT_HPA GUEST_ALIVE GUEST_PROC_ALIVE GUEST_PROC_ALIVE_LATER_ACCESS "
+TARGET_PAGETYPES="dirty,lru,mmap,anonymous=dirty,lru,mmap"
+do_test_async
+
+TEST_TITLE="kvm anonymous soft-offline"
+EXPECTED_RETURN_CODE="START GOT_HPA GUEST_ALIVE GUEST_PROC_ALIVE GUEST_PROC_ALIVE_LATER_ACCESS "
+TARGET_PAGETYPES="lru,mmap,anonymous=lru,mmap,anonymous"
+do_test_async

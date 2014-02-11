@@ -1,0 +1,150 @@
+KERNEL_SRC=/src/linux-dev
+. test_core/lib/setup_mce_tools.sh
+
+DEFAULT_TEST_PREPARE=prepare_test
+DEFAULT_TEST_CLEANUP=cleanup_test
+
+. setup_hugetlb_test.sh
+
+DEFAULT_TEST_CONTROLLER=control_hugetlb
+DEFAULT_TEST_CHECKER=check_hugetlb
+
+ERROR_TYPE=mce-srao
+
+ERROR_OFFSET=0
+
+TEST_TITLE="hugetlb mce-srao head later-access"
+EXPECTED_RETURN_CODE="START ACCESS KILLED"
+TEST_PROGRAM="${THUGETLB} -c"
+do_test_sync
+
+TEST_TITLE="hugetlb mce-srao head avoid-access"
+EXPECTED_RETURN_CODE="START EXIT"
+TEST_PROGRAM="${THUGETLB} -c -a"
+do_test_sync
+
+ERROR_OFFSET=1
+
+TEST_TITLE="hugetlb mce-srao tail later-access"
+EXPECTED_RETURN_CODE="START ACCESS KILLED"
+TEST_PROGRAM="${THUGETLB} -c"
+do_test_sync
+
+TEST_TITLE="hugetlb mce-srao tail avoid-access"
+EXPECTED_RETURN_CODE="START EXIT"
+TEST_PROGRAM="${THUGETLB} -c -a"
+do_test_sync
+
+
+ERROR_TYPE=hard-offline
+
+ERROR_OFFSET=0
+
+TEST_TITLE="hugetlb hard-offline head later-access"
+EXPECTED_RETURN_CODE="START ACCESS KILLED"
+TEST_PROGRAM="${THUGETLB} -c"
+do_test_sync
+
+TEST_TITLE="hugetlb hard-offline head avoid-access"
+EXPECTED_RETURN_CODE="START EXIT"
+TEST_PROGRAM="${THUGETLB} -c -a"
+do_test_sync
+
+ERROR_OFFSET=1
+
+TEST_TITLE="hugetlb hard-offline tail later-access"
+EXPECTED_RETURN_CODE="START ACCESS KILLED"
+TEST_PROGRAM="${THUGETLB} -c"
+do_test_sync
+
+TEST_TITLE="hugetlb hard-offline tail avoid-access"
+EXPECTED_RETURN_CODE="START EXIT"
+TEST_PROGRAM="${THUGETLB} -c -a"
+do_test_sync
+
+
+ERROR_TYPE=soft-offline
+
+ERROR_OFFSET=0
+
+TEST_TITLE="hugetlb soft-offline head later-access"
+EXPECTED_RETURN_CODE="START ACCESS EXIT"
+TEST_PROGRAM="${THUGETLB} -c"
+TEST_CHECKER=check_hugetlb_soft_offline
+do_test_sync
+
+TEST_TITLE="hugetlb soft-offline head avoid-access"
+EXPECTED_RETURN_CODE="START EXIT"
+TEST_PROGRAM="${THUGETLB} -c -a"
+TEST_CHECKER=check_hugetlb_soft_offline
+do_test_sync
+
+ERROR_OFFSET=1
+
+TEST_TITLE="hugetlb soft-offline tail later-access"
+EXPECTED_RETURN_CODE="START ACCESS EXIT"
+TEST_PROGRAM="${THUGETLB} -c"
+TEST_CHECKER=check_hugetlb_soft_offline
+do_test_sync
+
+TEST_TITLE="hugetlb soft-offline tail avoid-access"
+EXPECTED_RETURN_CODE="START EXIT"
+TEST_PROGRAM="${THUGETLB} -c -a"
+TEST_CHECKER=check_hugetlb_soft_offline
+do_test_sync
+
+
+ERROR_TYPE=madv_hard
+ERROR_OFFSET=0
+
+TEST_TITLE="hugetlb madv_hard head later-access"
+EXPECTED_RETURN_CODE="START ACCESS KILLED"
+TEST_PROGRAM="${THUGETLB} -H"
+do_test_sync
+
+TEST_TITLE="hugetlb madv_hard head avoid-access"
+EXPECTED_RETURN_CODE="START EXIT"
+TEST_PROGRAM="${THUGETLB} -H -a"
+do_test_sync
+
+ERROR_OFFSET=1
+
+TEST_TITLE="hugetlb madv_hard tail later-access"
+EXPECTED_RETURN_CODE="START ACCESS KILLED"
+TEST_PROGRAM="${THUGETLB} -H"
+do_test_sync
+
+TEST_TITLE="hugetlb madv_hard tail avoid-access"
+EXPECTED_RETURN_CODE="START EXIT"
+TEST_PROGRAM="${THUGETLB} -H -a"
+do_test_sync
+
+
+ERROR_TYPE=madv_soft
+ERROR_OFFSET=0
+
+TEST_TITLE="hugetlb madv_soft head later-access"
+EXPECTED_RETURN_CODE="START ACCESS EXIT"
+TEST_PROGRAM="${THUGETLB} -S"
+TEST_CHECKER=check_hugetlb_soft_offline
+do_test_sync
+
+TEST_TITLE="hugetlb madv_soft head avoid-access"
+EXPECTED_RETURN_CODE="START EXIT"
+TEST_PROGRAM="${THUGETLB} -S -a"
+TEST_CHECKER=check_hugetlb_soft_offline
+do_test_sync
+
+ERROR_OFFSET=1
+
+TEST_TITLE="hugetlb madv_soft tail later-access"
+EXPECTED_RETURN_CODE="START ACCESS EXIT"
+TEST_PROGRAM="${THUGETLB} -S"
+TEST_CHECKER=check_hugetlb_soft_offline
+do_test_sync
+
+TEST_TITLE="hugetlb madv_soft tail avoid-access"
+EXPECTED_RETURN_CODE="START EXIT"
+TEST_PROGRAM="${THUGETLB} -S -a"
+TEST_CHECKER=check_hugetlb_soft_offline
+do_test_sync

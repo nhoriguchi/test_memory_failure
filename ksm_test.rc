@@ -1,0 +1,70 @@
+KERNEL_SRC=/src/linux-dev
+. test_core/lib/setup_mce_tools.sh
+
+DEFAULT_TEST_PREPARE=prepare_test
+DEFAULT_TEST_CLEANUP=cleanup_test
+
+. setup_ksm_test.sh
+
+DEFAULT_TEST_CONTROLLER=control_ksm
+DEFAULT_TEST_CHECKER=check_ksm
+
+ERROR_TYPE=mce-srao
+TEST_TITLE="ksm mce-srao later-access"
+EXPECTED_RETURN_CODE="START ACCESS KILLED"
+TEST_PROGRAM="${TKSM} -c"
+do_test_sync
+
+TEST_TITLE="ksm mce-srao avoid-access"
+EXPECTED_RETURN_CODE="START EXIT"
+TEST_PROGRAM="${TKSM} -c -a"
+do_test_sync
+
+ERROR_TYPE=hard-offline
+TEST_TITLE="ksm hard-offline later-access"
+EXPECTED_RETURN_CODE="START ACCESS KILLED"
+TEST_PROGRAM="${TKSM} -c"
+do_test_sync
+
+TEST_TITLE="ksm hard-offline avoid-access"
+EXPECTED_RETURN_CODE="START EXIT"
+TEST_PROGRAM="${TKSM} -c -a"
+do_test_sync
+
+ERROR_TYPE=soft-offline
+TEST_TITLE="ksm soft-offline later-access"
+EXPECTED_RETURN_CODE="START ACCESS EXIT"
+TEST_PROGRAM="${TKSM} -c"
+TEST_CHECKER=check_ksm_soft
+do_test_sync
+
+TEST_TITLE="ksm soft-offline avoid-access"
+EXPECTED_RETURN_CODE="START EXIT"
+TEST_PROGRAM="${TKSM} -c -a"
+TEST_CHECKER=check_ksm_soft
+do_test_sync
+
+ERROR_TYPE=madv_hard
+TEST_TITLE="ksm madv_hard later-access"
+EXPECTED_RETURN_CODE="START ACCESS KILLED"
+TEST_PROGRAM="${TKSM} -H"
+do_test_sync
+
+TEST_TITLE="ksm madv_hard avoid-access"
+EXPECTED_RETURN_CODE="START EXIT"
+TEST_PROGRAM="${TKSM} -H -a"
+do_test_sync
+
+ERROR_TYPE=madv_soft
+TEST_TITLE="ksm madv_soft later-access"
+EXPECTED_RETURN_CODE="START ACCESS EXIT"
+TEST_PROGRAM="${TKSM} -S"
+TEST_CHECKER=check_ksm_soft
+do_test_sync
+
+TEST_TITLE="ksm madv_soft avoid-access"
+EXPECTED_RETURN_CODE="START EXIT"
+TEST_PROGRAM="${TKSM} -S -a"
+TEST_CHECKER=check_ksm_soft
+do_test_sync
+
