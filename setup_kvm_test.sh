@@ -180,9 +180,12 @@ control_kvm_panic() {
     run_guest_memeater || return 1
     get_hpa "$TARGET_PAGETYPES" || return 1
     set_return_code "GOT_HPA"
+    echo "echo 0 > /proc/sys/vm/memory_failure_recovery" | tee -a ${OFILE}
     ssh $VMIP "echo 0 > /proc/sys/vm/memory_failure_recovery"
     ${MCEINJECT} -e "$ERROR_TYPE" -a "${TARGETHPA}"
-    ssh $VMIP "echo 1 > /proc/sys/vm/memory_failure_recovery"
+    if vm_connectable ; then
+        ssh $VMIP "echo 1 > /proc/sys/vm/memory_failure_recovery"
+    fi
     check_guest_state
 }
 
@@ -209,53 +212,3 @@ check_kvm_soft_offline() {
     check_page_migrated "$TARGETGPA" "$TARGETHPA"
     check_nr_hwcorrupted
 }
-
-# _checker_hwpoison() {
-#     local expected="$1"
-#     local stall=false
-#     local guest_process_killed=false
-# 
-#     check_guest_state
-#     check_result $expected $stall $guest_process_killed
-#     check_console_output $TARGETHPA
-#     check_guest_console_output $TARGETGPA
-# }
-# 
-# check_cleanfile_srao() {
-#     _checker_hwpoison 0
-#     FALSENEGATIVE=true
-#     check_guest_console_output "clean LRU"
-#     FALSENEGATIVE=false
-# }
-# 
-# check_dirtyfile_srao() {
-#     _checker_hwpoison 1
-#     check_guest_console_output "dirty LRU"
-# }
-# 
-# check_anonymous_srao() {
-#     _checker_hwpoison 1
-#     check_guest_console_output "LRU"
-# }
-# 
-# _checker_soffline() {
-#     local expected="$1"
-#     local stall=false
-#     local guest_process_killed=false
-# 
-#     check_guest_state
-#     check_result $expected $stall $guest_process_killed
-#     check_page_migrated $TARGETGPA $TARGETHPA
-# }
-# 
-# check_cleanfile_soft() {
-#     _checker_soffline 0
-# }
-# 
-# check_dirtyfile_soft() {
-#     _checker_soffline 0
-# }
-# 
-# check_anonymous_soft() {
-#     _checker_soffline 0
-# }

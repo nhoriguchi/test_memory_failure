@@ -17,10 +17,10 @@ DEFAULT_TEST_CHECKER=check_kvm
 
 ERROR_TYPE=mce-srao
 
-TEST_TITLE="kvm panic"
+TEST_TITLE="kvm_panic"
 EXPECTED_RETURN_CODE="START GOT_HPA GUEST_PANICKED"
 TARGET_PAGETYPES="dirty,lru,mmap,anonymous=lru,mmap"
-TEST_CONTOLLER=control_kvm_panic
+TEST_CONTROLLER=control_kvm_panic
 TEST_CHECKER=check_kvm_panic
 do_test_async
 
