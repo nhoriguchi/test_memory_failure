@@ -101,3 +101,29 @@ check_hugepage_migrated() {
         count_failure "hugepage not migrated"
     fi
 }
+
+control_hugetlb_race() {
+    local tgthpage=0x$(${PAGETYPES}  -b huge,compound_head,mmap=huge,compound_head -Nl | sed -n -e 4p | cut -f1)
+    echo "echo target hugepage ${tgthpage}"
+    local tgthpage2=$(printf "0x%x" $[${tgthpage} + 3])
+    echo "echo target hugepage ${tgthpage2}"
+
+    ( while true ; do ${PAGETYPES} -b hwpoison -x -N ; done ) &
+    local pid1=$!
+    ( while true ; do ${MCEINJECT} -e "mce-srao" -a $tgthpage ; done ) &
+    local pid2=$!
+    ( while true ; do ${MCEINJECT} -e "mce-srao" -a $tgthpage2 ; done ) &
+    local pid3=$!
+    sleep 1
+    kill -9 $pid2
+    kill -9 $pid3
+    kill -9 $pid1
+    set_return_code EXIT
+}
+
+check_hugetlb_race() {
+    check_kernel_message -v "failed"
+    check_kernel_message_nobug
+    check_return_code "$EXPECTED_RETURN_CODE"
+    check_nr_hwcorrupted_consistent
+}
