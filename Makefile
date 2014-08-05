@@ -2,14 +2,14 @@ CC=gcc
 CFLAGS=-g # -Wall -Wextra
 TESTCASE_FILTER=
 
-src=tthp.c tksm.c thugetlb.c memeater.c
+src=tthp.c tksm.c thugetlb.c memeater.c memeater_multithread.c
 exe=$(src:.c=)
 srcdir=.
 dstdir=/usr/local/bin
 dstexe=$(addprefix $(dstdir)/,$(exe))
 
 OPT=-DDEBUG
-LIBOPT= #-lnuma # -lcgroup
+LIBOPT=-lpthread #-lnuma # -lcgroup
 
 all: get_test_core $(exe)
 %: %.c

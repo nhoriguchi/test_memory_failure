@@ -87,7 +87,6 @@ control_ksm() {
 }
 
 check_ksm() {
-    check_kernel_message -v "failed"
     check_kernel_message_nobug
     check_return_code "$EXPECTED_RETURN_CODE"
     check_nr_hwcorrupted
@@ -107,23 +106,3 @@ check_ksm_soft() {
     # check_ksm_migrated
     FALSENEGATIVE=false
 }
-
-# check_ksm_srao() {
-#     local result="$1"
-#     check_ksm_pages
-#     FALSENEGATIVE=true
-#     check_result_ksm PASS "$result"
-#     check_console_output "LRU page"
-#     FALSENEGATIVE=false
-#     check_nr_hwcorrupted
-# }
-
-# check_ksm_srao_killed() {
-#     local result="$1"
-#     check_ksm_pages
-#     check_result_ksm TIMEOUT "$result"
-#     FALSENEGATIVE=true
-#     check_console_output "LRU page"
-#     FALSENEGATIVE=false
-#     check_nr_hwcorrupted
-# }
