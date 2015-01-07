@@ -1,6 +1,7 @@
 #!/bin/bash
 
 KSMDIR="/sys/kernel/mm/ksm"
+
 [ ! -d "$KSMDIR" ] && echo "Kernel not support ksm." >&2 && exit 1
 TKSM=`dirname $BASH_SOURCE`/tksm
 [ ! -x "$TKSM" ] && echo "tksm not found." >&2 && exit 1

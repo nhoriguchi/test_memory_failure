@@ -12,7 +12,10 @@ THUGETLB=`dirname $BASH_SOURCE`/thugetlb
 
 sysctl vm.nr_hugepages=100
 NRHUGEPAGE=`cat /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages`
-[ "${NRHUGEPAGE}" -ne 100 ] && echo "failed to allocate hugepage." >&2 && exit 1
+if [ "${NRHUGEPAGE}" -ne 100 ] ; then
+    echo "Set vm.nr_hugepages=100, but current size is $NRHUGEPAGE," >&2
+    echo "it could make later tests fail." >&2
+fi
 
 hva2hpa() {
     $PAGETYPES -Nl -a $1 | grep -v offset | cut -f2
@@ -108,6 +111,22 @@ control_hugetlb_race() {
     local tgthpage2=$(printf "0x%x" $[${tgthpage} + 3])
     echo "echo target hugepage ${tgthpage2}"
 
+    #
+    # generating race in simple way
+    #
+    for i in $(seq 10) ; do
+        touch $TMPF.sync
+        ( while [ -e $TMPF.sync ] ; do true ; done ; ${MCEINJECT} -e "mce-srao" -a $tgthpage ) &
+        ( while [ -e $TMPF.sync ] ; do true ; done ; ${MCEINJECT} -e "mce-srao" -a $tgthpage2 ) &
+        sleep 0.1
+        rm $TMPF.sync
+        sleep 0.1
+    done
+    $PAGETYPES -b huge,compound_head=huge,compound_head -Nl
+
+    #
+    # iterating MCE injection
+    #
     ( while true ; do ${PAGETYPES} -b hwpoison -x -N ; done ) &
     local pid1=$!
     ( while true ; do ${MCEINJECT} -e "mce-srao" -a $tgthpage ; done ) &
@@ -115,6 +134,7 @@ control_hugetlb_race() {
     ( while true ; do ${MCEINJECT} -e "mce-srao" -a $tgthpage2 ; done ) &
     local pid3=$!
     sleep 1
+    $PAGETYPES -b huge,compound_head=huge,compound_head -Nl
     kill -9 $pid2
     kill -9 $pid3
     kill -9 $pid1
