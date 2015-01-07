@@ -10,59 +10,59 @@ DEFAULT_TEST_CONTROLLER=control_ksm
 DEFAULT_TEST_CHECKER=check_ksm
 
 ERROR_TYPE=mce-srao
-TEST_TITLE="ksm mce-srao later-access"
+TEST_TITLE="ksm_mce-srao_later-access"
 EXPECTED_RETURN_CODE="START ACCESS KILLED"
 TEST_PROGRAM="${TKSM} -c"
 do_test_sync
 
-TEST_TITLE="ksm mce-srao avoid-access"
+TEST_TITLE="ksm_mce-srao_avoid-access"
 EXPECTED_RETURN_CODE="START EXIT"
 TEST_PROGRAM="${TKSM} -c -a"
 do_test_sync
 
 ERROR_TYPE=hard-offline
-TEST_TITLE="ksm hard-offline later-access"
+TEST_TITLE="ksm_hard-offline_later-access"
 EXPECTED_RETURN_CODE="START ACCESS KILLED"
 TEST_PROGRAM="${TKSM} -c"
 do_test_sync
 
-TEST_TITLE="ksm hard-offline avoid-access"
+TEST_TITLE="ksm_hard-offline_avoid-access"
 EXPECTED_RETURN_CODE="START EXIT"
 TEST_PROGRAM="${TKSM} -c -a"
 do_test_sync
 
 ERROR_TYPE=soft-offline
-TEST_TITLE="ksm soft-offline later-access"
+TEST_TITLE="ksm_soft-offline_later-access"
 EXPECTED_RETURN_CODE="START ACCESS EXIT"
 TEST_PROGRAM="${TKSM} -c"
 TEST_CHECKER=check_ksm_soft
 do_test_sync
 
-TEST_TITLE="ksm soft-offline avoid-access"
+TEST_TITLE="ksm_soft-offline_avoid-access"
 EXPECTED_RETURN_CODE="START EXIT"
 TEST_PROGRAM="${TKSM} -c -a"
 TEST_CHECKER=check_ksm_soft
 do_test_sync
 
 ERROR_TYPE=madv_hard
-TEST_TITLE="ksm madv_hard later-access"
+TEST_TITLE="ksm_madv_hard_later-access"
 EXPECTED_RETURN_CODE="START ACCESS KILLED"
 TEST_PROGRAM="${TKSM} -H"
 do_test_sync
 
-TEST_TITLE="ksm madv_hard avoid-access"
+TEST_TITLE="ksm_madv_hard_avoid-access"
 EXPECTED_RETURN_CODE="START EXIT"
 TEST_PROGRAM="${TKSM} -H -a"
 do_test_sync
 
 ERROR_TYPE=madv_soft
-TEST_TITLE="ksm madv_soft later-access"
+TEST_TITLE="ksm_madv_soft_later-access"
 EXPECTED_RETURN_CODE="START ACCESS EXIT"
 TEST_PROGRAM="${TKSM} -S"
 TEST_CHECKER=check_ksm_soft
 do_test_sync
 
-TEST_TITLE="ksm madv_soft avoid-access"
+TEST_TITLE="ksm_madv_soft_avoid-access"
 EXPECTED_RETURN_CODE="START EXIT"
 TEST_PROGRAM="${TKSM} -S -a"
 TEST_CHECKER=check_ksm_soft

@@ -26,17 +26,17 @@ do_test_async
 
 ERROR_TYPE=mce-srao
 
-TEST_TITLE="kvm clean_pagecache mce-srao"
+TEST_TITLE="kvm_clean_pagecache_mce-srao"
 EXPECTED_RETURN_CODE="START GOT_HPA GUEST_ALIVE GUEST_PROC_ALIVE"
 TARGET_PAGETYPES="dirty,lru,mmap,anonymous=lru,mmap"
 do_test_async
 
-TEST_TITLE="kvm dirty_pagecache mce-srao"
+TEST_TITLE="kvm_dirty_pagecache_mce-srao"
 EXPECTED_RETURN_CODE="START GOT_HPA GUEST_ALIVE GUEST_PROC_ALIVE GUEST_PROC_KILLED_LATER_ACCESS"
 TARGET_PAGETYPES="dirty,lru,mmap,anonymous=dirty,lru,mmap"
 do_test_async
 
-TEST_TITLE="kvm anonymous mce-srao"
+TEST_TITLE="kvm_anonymous_mce-srao"
 EXPECTED_RETURN_CODE="START GOT_HPA GUEST_ALIVE GUEST_PROC_ALIVE GUEST_PROC_KILLED_LATER_ACCESS"
 TARGET_PAGETYPES="lru,mmap,anonymous=lru,mmap,anonymous"
 do_test_async
@@ -44,17 +44,17 @@ do_test_async
 
 ERROR_TYPE=hard-offline
 
-TEST_TITLE="kvm clean_pagecache hard-offline"
+TEST_TITLE="kvm_clean_pagecache_hard-offline"
 EXPECTED_RETURN_CODE="START GOT_HPA GUEST_ALIVE GUEST_PROC_ALIVE"
 TARGET_PAGETYPES="dirty,lru,mmap,anonymous=lru,mmap"
 do_test_async
 
-TEST_TITLE="kvm dirty_pagecache hard-offline"
+TEST_TITLE="kvm_dirty_pagecache_hard-offline"
 EXPECTED_RETURN_CODE="START GOT_HPA GUEST_ALIVE GUEST_PROC_ALIVE GUEST_PROC_KILLED_LATER_ACCESS"
 TARGET_PAGETYPES="dirty,lru,mmap,anonymous=dirty,lru,mmap"
 do_test_async
 
-TEST_TITLE="kvm anonymous hard-offline"
+TEST_TITLE="kvm_anonymous_hard-offline"
 EXPECTED_RETURN_CODE="START GOT_HPA GUEST_ALIVE GUEST_PROC_ALIVE GUEST_PROC_KILLED_LATER_ACCESS"
 TARGET_PAGETYPES="lru,mmap,anonymous=lru,mmap,anonymous"
 do_test_async
@@ -63,17 +63,17 @@ do_test_async
 ERROR_TYPE=soft-offline
 DEFAULT_TEST_CHECKER=check_kvm_soft_offline
 
-TEST_TITLE="kvm clean_pagecache soft-offline"
+TEST_TITLE="kvm_clean_pagecache_soft-offline"
 EXPECTED_RETURN_CODE="START GOT_HPA GUEST_ALIVE GUEST_PROC_ALIVE GUEST_PROC_ALIVE_LATER_ACCESS"
 TARGET_PAGETYPES="dirty,lru,mmap,anonymous=lru,mmap"
 do_test_async
 
-TEST_TITLE="kvm dirty_pagecache soft-offline"
+TEST_TITLE="kvm_dirty_pagecache_soft-offline"
 EXPECTED_RETURN_CODE="START GOT_HPA GUEST_ALIVE GUEST_PROC_ALIVE GUEST_PROC_ALIVE_LATER_ACCESS"
 TARGET_PAGETYPES="dirty,lru,mmap,anonymous=dirty,lru,mmap"
 do_test_async
 
-TEST_TITLE="kvm anonymous soft-offline"
+TEST_TITLE="kvm_anonymous_soft-offline"
 EXPECTED_RETURN_CODE="START GOT_HPA GUEST_ALIVE GUEST_PROC_ALIVE GUEST_PROC_ALIVE_LATER_ACCESS"
 TARGET_PAGETYPES="lru,mmap,anonymous=lru,mmap,anonymous"
 do_test_async
