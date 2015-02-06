@@ -7,28 +7,25 @@ if [ ! -d "${HUGETLBDIR}" ] ; then
         echo "hugetlbfs not mounted." >&2 && exit 1
     fi
 fi
-THUGETLB=`dirname $BASH_SOURCE`/thugetlb
-[ ! -x "$THUGETLB" ] && echo "thugetlb not found." >&2 && exit 1
 
-sysctl vm.nr_hugepages=100
-NRHUGEPAGE=`cat /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages`
-if [ "${NRHUGEPAGE}" -ne 100 ] ; then
-    echo "Set vm.nr_hugepages=100, but current size is $NRHUGEPAGE," >&2
-    echo "it could make later tests fail." >&2
-fi
+check_and_define_tp thugetlb
 
 hva2hpa() {
     $PAGETYPES -Nl -a $1 | grep -v offset | cut -f2
 }
 
 prepare_test() {
+    # TODO: early kill knob?
+    # TODO: kill exisiting programs?
     save_nr_corrupted_before
+    set_and_check_hugetlb_pool 100
     get_kernel_message_before
 }
 
 cleanup_test() {
     save_nr_corrupted_inject
     all_unpoison
+    set_and_check_hugetlb_pool 0
     save_nr_corrupted_unpoison
     get_kernel_message_after
     get_kernel_message_diff | tee -a ${OFILE}
@@ -45,10 +42,13 @@ control_hugetlb() {
             ${PAGETYPES} -p ${pid} -rlN -a ${BASEVFN}+1310720 > ${TMPF}.pageflagcheck1
             ${PAGETYPES} -p ${pid} -a ${BASEVFN} | grep huge > /dev/null 2>&1
             if [ $? -ne 0 ] ; then
-                echo "Target address is NOT hugepage." | tee -a /dev/kmsg
+                echo "Target address is NOT hugepage." | tee -a $OFILE
                 set_return_code "HUGEPAGE_ALLOC_FAILURE"
+                kill -SIGKILL $pid
+                return 0
             fi
             # cat /proc/${pid}/numa_maps | tee -a ${OFILE}
+            printf "Inject MCE ($ERROR_TYPE) to %lx.\n" $injpfn | tee -a $OFILE
             ${MCEINJECT} -p ${pid} -e ${ERROR_TYPE} -a ${injpfn} # 2>&1
             kill -SIGUSR1 ${pid}
             ;;
@@ -81,7 +81,7 @@ control_hugetlb() {
     return 1
 }
 
-check_hugetlb() {
+check_hugetlb_hard_offline() {
     check_kernel_message -v "failed"
     check_kernel_message_nobug
     check_return_code "$EXPECTED_RETURN_CODE"
@@ -89,7 +89,7 @@ check_hugetlb() {
 }
 
 check_hugetlb_soft_offline() {
-    check_hugetlb
+    check_hugetlb_hard_offline
     check_hugepage_migrated
 }
 

@@ -1,0 +1,5 @@
+EXPECTED_RETURN_CODE="START ACCESS KILLED"
+TEST_PROGRAM="$thugetlb -H"
+TEST_CHECKER=check_hugetlb_hard_offline
+ERROR_TYPE=madv_hard
+ERROR_OFFSET=0

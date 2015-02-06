@@ -1,0 +1,4 @@
+TEST_PROGRAM="$tksm -c"
+ERROR_TYPE=soft-offline
+TEST_CHECKER=check_ksm_soft_offline
+EXPECTED_RETURN_CODE="START ACCESS EXIT"

@@ -1,0 +1,5 @@
+EXPECTED_RETURN_CODE="START EXIT"
+TEST_PROGRAM="$thugetlb -H -a"
+TEST_CHECKER=check_hugetlb_hard_offline
+ERROR_TYPE=madv_hard
+ERROR_OFFSET=1

@@ -1,154 +1,33 @@
 KERNEL_SRC=/src/linux-dev
+. test_core/lib/common.sh
 . test_core/lib/setup_mce_tools.sh
+. test_core/lib/setup_hugetlb_base.sh
+. setup_hugetlb_test.sh
 
 DEFAULT_TEST_PREPARE=prepare_test
 DEFAULT_TEST_CLEANUP=cleanup_test
-
-. setup_hugetlb_test.sh
-
 DEFAULT_TEST_CONTROLLER=control_hugetlb
-DEFAULT_TEST_CHECKER=check_hugetlb
 
-ERROR_TYPE=mce-srao
-
-ERROR_OFFSET=0
-
-TEST_TITLE="hugetlb_mce-srao_head_later-access"
-EXPECTED_RETURN_CODE="START ACCESS KILLED"
-TEST_PROGRAM="${THUGETLB} -c"
-do_test_sync
-
-TEST_TITLE="hugetlb_mce-srao_head_avoid-access"
-EXPECTED_RETURN_CODE="START EXIT"
-TEST_PROGRAM="${THUGETLB} -c -a"
-do_test_sync
-
-ERROR_OFFSET=1
-
-TEST_TITLE="hugetlb_mce-srao_tail_later-access"
-EXPECTED_RETURN_CODE="START ACCESS KILLED"
-TEST_PROGRAM="${THUGETLB} -c"
-do_test_sync
-
-TEST_TITLE="hugetlb_mce-srao_tail_avoid-access"
-EXPECTED_RETURN_CODE="START EXIT"
-TEST_PROGRAM="${THUGETLB} -c -a"
-do_test_sync
-
-
-ERROR_TYPE=hard-offline
-
-ERROR_OFFSET=0
-
-TEST_TITLE="hugetlb_hard-offline_head_later-access"
-EXPECTED_RETURN_CODE="START ACCESS KILLED"
-TEST_PROGRAM="${THUGETLB} -c"
-do_test_sync
-
-TEST_TITLE="hugetlb_hard-offline_head_avoid-access"
-EXPECTED_RETURN_CODE="START EXIT"
-TEST_PROGRAM="${THUGETLB} -c -a"
-do_test_sync
-
-ERROR_OFFSET=1
-
-TEST_TITLE="hugetlb_hard-offline_tail_later-access"
-EXPECTED_RETURN_CODE="START ACCESS KILLED"
-TEST_PROGRAM="${THUGETLB} -c"
-do_test_sync
-
-TEST_TITLE="hugetlb_hard-offline_tail_avoid-access"
-EXPECTED_RETURN_CODE="START EXIT"
-TEST_PROGRAM="${THUGETLB} -c -a"
-do_test_sync
-
-
-ERROR_TYPE=soft-offline
-
-ERROR_OFFSET=0
-
-TEST_TITLE="hugetlb_soft-offline_head_later-access"
-EXPECTED_RETURN_CODE="START ACCESS EXIT"
-TEST_PROGRAM="${THUGETLB} -c"
-TEST_CHECKER=check_hugetlb_soft_offline
-do_test_sync
-
-TEST_TITLE="hugetlb_soft-offline_head_avoid-access"
-EXPECTED_RETURN_CODE="START EXIT"
-TEST_PROGRAM="${THUGETLB} -c -a"
-TEST_CHECKER=check_hugetlb_soft_offline
-do_test_sync
-
-ERROR_OFFSET=1
-
-TEST_TITLE="hugetlb_soft-offline_tail_later-access"
-EXPECTED_RETURN_CODE="START ACCESS EXIT"
-TEST_PROGRAM="${THUGETLB} -c"
-TEST_CHECKER=check_hugetlb_soft_offline
-do_test_sync
-
-TEST_TITLE="hugetlb_soft-offline_tail_avoid-access"
-EXPECTED_RETURN_CODE="START EXIT"
-TEST_PROGRAM="${THUGETLB} -c -a"
-TEST_CHECKER=check_hugetlb_soft_offline
-do_test_sync
-
-
-ERROR_TYPE=madv_hard
-ERROR_OFFSET=0
-
-TEST_TITLE="hugetlb_madv_hard_head_later-access"
-EXPECTED_RETURN_CODE="START ACCESS KILLED"
-TEST_PROGRAM="${THUGETLB} -H"
-do_test_sync
-
-TEST_TITLE="hugetlb_madv_hard_head_avoid-access"
-EXPECTED_RETURN_CODE="START EXIT"
-TEST_PROGRAM="${THUGETLB} -H -a"
-do_test_sync
-
-ERROR_OFFSET=1
-
-TEST_TITLE="hugetlb_madv_hard_tail_later-access"
-EXPECTED_RETURN_CODE="START ACCESS KILLED"
-TEST_PROGRAM="${THUGETLB} -H"
-do_test_sync
-
-TEST_TITLE="hugetlb_madv_hard_tail_avoid-access"
-EXPECTED_RETURN_CODE="START EXIT"
-TEST_PROGRAM="${THUGETLB} -H -a"
-do_test_sync
-
-
-ERROR_TYPE=madv_soft
-ERROR_OFFSET=0
-
-TEST_TITLE="hugetlb_madv_soft_head_later-access"
-EXPECTED_RETURN_CODE="START ACCESS EXIT"
-TEST_PROGRAM="${THUGETLB} -S"
-TEST_CHECKER=check_hugetlb_soft_offline
-do_test_sync
-
-TEST_TITLE="hugetlb_madv_soft_head_avoid-access"
-EXPECTED_RETURN_CODE="START EXIT"
-TEST_PROGRAM="${THUGETLB} -S -a"
-TEST_CHECKER=check_hugetlb_soft_offline
-do_test_sync
-
-ERROR_OFFSET=1
-
-TEST_TITLE="hugetlb_madv_soft_tail_later-access"
-EXPECTED_RETURN_CODE="START ACCESS EXIT"
-TEST_PROGRAM="${THUGETLB} -S"
-TEST_CHECKER=check_hugetlb_soft_offline
-do_test_sync
-
-TEST_TITLE="hugetlb_madv_soft_tail_avoid-access"
-EXPECTED_RETURN_CODE="START EXIT"
-TEST_PROGRAM="${THUGETLB} -S -a"
-TEST_CHECKER=check_hugetlb_soft_offline
-do_test_sync
-
+#!EMBED: cases/hugetlb_mce-srao_head_later-access
+#!EMBED: cases/hugetlb_mce-srao_head_avoid-access
+#!EMBED: cases/hugetlb_mce-srao_tail_later-access
+#!EMBED: cases/hugetlb_mce-srao_tail_avoid-access
+#!EMBED: cases/hugetlb_hard-offline_head_later-access
+#!EMBED: cases/hugetlb_hard-offline_head_avoid-access
+#!EMBED: cases/hugetlb_hard-offline_tail_later-access
+#!EMBED: cases/hugetlb_hard-offline_tail_avoid-access
+#!EMBED: cases/hugetlb_soft-offline_head_later-access
+#!EMBED: cases/hugetlb_soft-offline_head_avoid-access
+#!EMBED: cases/hugetlb_soft-offline_tail_later-access
+#!EMBED: cases/hugetlb_soft-offline_tail_avoid-access
+#!EMBED: cases/hugetlb_madv_hard_head_later-access
+#!EMBED: cases/hugetlb_madv_hard_head_avoid-access
+#!EMBED: cases/hugetlb_madv_hard_tail_later-access
+#!EMBED: cases/hugetlb_madv_hard_tail_avoid-access
+#!EMBED: cases/hugetlb_madv_soft_head_later-access
+#!EMBED: cases/hugetlb_madv_soft_head_avoid-access
+#!EMBED: cases/hugetlb_madv_soft_tail_later-access
+#!EMBED: cases/hugetlb_madv_soft_tail_avoid-access
 
 #
 # Race between multiple errors on free hugepage
@@ -157,4 +36,5 @@ TEST_TITLE="hugetlb_race_on_free_hugepage"
 EXPECTED_RETURN_CODE="START EXIT"
 TEST_CONTROLLER=control_hugetlb_race
 TEST_CHECKER=check_hugetlb_race
+TEST_FLAGS=devel
 do_test_async

@@ -1,40 +1,15 @@
 #!/bin/bash
 
-KSMDIR="/sys/kernel/mm/ksm"
+check_and_define_tp tksm
 
-[ ! -d "$KSMDIR" ] && echo "Kernel not support ksm." >&2 && exit 1
-TKSM=`dirname $BASH_SOURCE`/tksm
-[ ! -x "$TKSM" ] && echo "tksm not found." >&2 && exit 1
-
-ksm_on() {
-    echo 1    > $KSMDIR/run
-    echo 1000 > $KSMDIR/pages_to_scan
-    echo 0    > $KSMDIR/sleep_millisecs
-}
-ksm_off() {
-    echo 2    > $KSMDIR/run
-    echo 100  > $KSMDIR/pages_to_scan
-    echo 20   > $KSMDIR/sleep_millisecs
-}
-get_pages_run()      { cat $KSMDIR/run;            }
-get_pages_shared()   { cat $KSMDIR/pages_shared;   }
-get_pages_sharing()  { cat $KSMDIR/pages_sharing;  }
-get_pages_unshared() { cat $KSMDIR/pages_unshared; }
-get_pages_volatile() { cat $KSMDIR/pages_volatile; }
-get_full_scans()     { cat $KSMDIR/full_scans;     }
-
-show_ksm_params() {
-    echo "KSM params: run:`get_pages_run`, shared:`get_pages_shared`, sharing:`get_pages_sharing`, unshared:`get_pages_unshared`, volatile:`get_pages_volatile`, scans:`get_full_scans`"
-}
-
-prepare_test() {
+prepare_ksm_test() {
     ksm_on
     show_ksm_params | tee -a ${OFILE}
     save_nr_corrupted_before
     get_kernel_message_before
 }
 
-cleanup_test() {
+cleanup_ksm_test() {
     save_nr_corrupted_inject
     all_unpoison
     save_nr_corrupted_unpoison
@@ -44,7 +19,7 @@ cleanup_test() {
     get_kernel_message_diff | tee -a ${OFILE}
 }
 
-control_ksm() {
+control_ksm_test() {
     local pid="$1"
     local line="$2"
 
@@ -93,14 +68,14 @@ check_ksm() {
     check_nr_hwcorrupted
 }
 
-check_ksm_hard() {
+check_ksm_hard_offline() {
     check_ksm
     FALSENEGATIVE=true
     check_console_output -v "give up"
     FALSENEGATIVE=false
 }
 
-check_ksm_soft() {
+check_ksm_soft_offline() {
     check_ksm
     FALSENEGATIVE=true
     check_console_output -v "migration failed"

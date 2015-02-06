@@ -1,70 +1,21 @@
 KERNEL_SRC=/src/linux-dev
+. test_core/lib/common.sh
 . test_core/lib/setup_mce_tools.sh
-
-DEFAULT_TEST_PREPARE=prepare_test
-DEFAULT_TEST_CLEANUP=cleanup_test
+. test_core/lib/setup_ksm_base.sh
 
 . setup_ksm_test.sh
 
-DEFAULT_TEST_CONTROLLER=control_ksm
-DEFAULT_TEST_CHECKER=check_ksm
+DEFAULT_TEST_PREPARE=prepare_ksm_test
+DEFAULT_TEST_CLEANUP=cleanup_ksm_test
+DEFAULT_TEST_CONTROLLER=control_ksm_test
 
-ERROR_TYPE=mce-srao
-TEST_TITLE="ksm_mce-srao_later-access"
-EXPECTED_RETURN_CODE="START ACCESS KILLED"
-TEST_PROGRAM="${TKSM} -c"
-do_test_sync
-
-TEST_TITLE="ksm_mce-srao_avoid-access"
-EXPECTED_RETURN_CODE="START EXIT"
-TEST_PROGRAM="${TKSM} -c -a"
-do_test_sync
-
-ERROR_TYPE=hard-offline
-TEST_TITLE="ksm_hard-offline_later-access"
-EXPECTED_RETURN_CODE="START ACCESS KILLED"
-TEST_PROGRAM="${TKSM} -c"
-do_test_sync
-
-TEST_TITLE="ksm_hard-offline_avoid-access"
-EXPECTED_RETURN_CODE="START EXIT"
-TEST_PROGRAM="${TKSM} -c -a"
-do_test_sync
-
-ERROR_TYPE=soft-offline
-TEST_TITLE="ksm_soft-offline_later-access"
-EXPECTED_RETURN_CODE="START ACCESS EXIT"
-TEST_PROGRAM="${TKSM} -c"
-TEST_CHECKER=check_ksm_soft
-do_test_sync
-
-TEST_TITLE="ksm_soft-offline_avoid-access"
-EXPECTED_RETURN_CODE="START EXIT"
-TEST_PROGRAM="${TKSM} -c -a"
-TEST_CHECKER=check_ksm_soft
-do_test_sync
-
-ERROR_TYPE=madv_hard
-TEST_TITLE="ksm_madv_hard_later-access"
-EXPECTED_RETURN_CODE="START ACCESS KILLED"
-TEST_PROGRAM="${TKSM} -H"
-do_test_sync
-
-TEST_TITLE="ksm_madv_hard_avoid-access"
-EXPECTED_RETURN_CODE="START EXIT"
-TEST_PROGRAM="${TKSM} -H -a"
-do_test_sync
-
-ERROR_TYPE=madv_soft
-TEST_TITLE="ksm_madv_soft_later-access"
-EXPECTED_RETURN_CODE="START ACCESS EXIT"
-TEST_PROGRAM="${TKSM} -S"
-TEST_CHECKER=check_ksm_soft
-do_test_sync
-
-TEST_TITLE="ksm_madv_soft_avoid-access"
-EXPECTED_RETURN_CODE="START EXIT"
-TEST_PROGRAM="${TKSM} -S -a"
-TEST_CHECKER=check_ksm_soft
-do_test_sync
-
+#!EMBED: cases/ksm_mce-srao_avoid-access
+#!EMBED: cases/ksm_mce-srao_later-access
+#!EMBED: cases/ksm_hard-offline_later-access
+#!EMBED: cases/ksm_hard-offline_avoid-access
+#!EMBED: cases/ksm_soft-offline_later-access
+#!EMBED: cases/ksm_soft-offline_avoid-access
+#!EMBED: cases/ksm_madv_hard_later-access
+#!EMBED: cases/ksm_madv_hard_avoid-access
+#!EMBED: cases/ksm_madv_soft_later-access
+#!EMBED: cases/ksm_madv_soft_avoid-access
