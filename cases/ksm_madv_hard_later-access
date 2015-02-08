@@ -1,4 +1,5 @@
 TEST_PROGRAM="$tksm -H"
 ERROR_TYPE=madv_hard
 TEST_CHECKER=check_ksm_hard_offline
-EXPECTED_RETURN_CODE="START ACCESS KILLED"
+# madv(hard offline) never affect in bios level, so no MCE SRAR should occur in later access
+EXPECTED_RETURN_CODE="START ACCESS EXIT"

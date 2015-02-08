@@ -1,4 +1,5 @@
 TEST_PROGRAM="$tksm -c"
 ERROR_TYPE=hard-offline
 TEST_CHECKER=check_ksm_hard_offline
-EXPECTED_RETURN_CODE="START ACCESS KILLED"
+# hard_offlining never affect in bios level, so no MCE SRAR should occur in later access
+EXPECTED_RETURN_CODE="START ACCESS EXIT"
