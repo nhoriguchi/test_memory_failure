@@ -5,27 +5,4 @@ KERNEL_SRC=/src/linux-dev
 
 . setup_thp_test.sh
 
-DEFAULT_TEST_PREPARE=prepare_test
-DEFAULT_TEST_CLEANUP=cleanup_test
-DEFAULT_TEST_CONTROLLER=control_thp
-
-#!EMBED: cases/thp_mce-srao_head_later-access
-#!EMBED: cases/thp_mce-srao_head_avoid-access
-#!EMBED: cases/thp_mce-srao_tail_later-access
-#!EMBED: cases/thp_mce-srao_tail_avoid-access
-#!EMBED: cases/thp_hard-offline_head_later-access
-#!EMBED: cases/thp_hard-offline_head_avoid-access
-#!EMBED: cases/thp_hard-offline_tail_later-access
-#!EMBED: cases/thp_hard-offline_tail_avoid-access
-#!EMBED: cases/thp_soft-offline_head_later-access
-#!EMBED: cases/thp_soft-offline_head_avoid-access
-#!EMBED: cases/thp_soft-offline_tail_later-access
-#!EMBED: cases/thp_soft-offline_tail_avoid-access
-#!EMBED: cases/thp_madv_hard_head_later-access
-#!EMBED: cases/thp_madv_hard_head_avoid-access
-#!EMBED: cases/thp_madv_hard_tail_later-access
-#!EMBED: cases/thp_madv_hard_tail_avoid-access
-#!EMBED: cases/thp_madv_soft_head_later-access
-#!EMBED: cases/thp_madv_soft_head_avoid-access
-#!EMBED: cases/thp_madv_soft_tail_later-access
-#!EMBED: cases/thp_madv_soft_tail_avoid-access
+#!TABLE: thp_test.rc.table

@@ -1,0 +1,10 @@
+ksm_mce-srao_later-access     | prepare_ksm | cleanup_ksm | control_ksm | check_ksm_hard_offline |       | | $tksm -c    | START ACCESS EXIT | ERROR_TYPE=mce-srao
+ksm_mce-srao_avoid-access     | prepare_ksm | cleanup_ksm | control_ksm | check_ksm_hard_offline |       | | $tksm -c -a | START EXIT        | ERROR_TYPE=mce-srao
+ksm_hard-offline_later-access | prepare_ksm | cleanup_ksm | control_ksm | check_ksm_hard_offline |       | | $tksm -c    | START ACCESS EXIT | ERROR_TYPE=hard-offline 
+ksm_hard-offline_avoid-access | prepare_ksm | cleanup_ksm | control_ksm | check_ksm_hard_offline |       | | $tksm -c -a | START EXIT        | ERROR_TYPE=hard-offline
+ksm_soft-offline_later-access | prepare_ksm | cleanup_ksm | control_ksm | check_ksm_soft_offline |       | | $tksm -c    | START ACCESS EXIT | ERROR_TYPE=soft-offline
+ksm_soft-offline_avoid-access | prepare_ksm | cleanup_ksm | control_ksm | check_ksm_soft_offline |       | | $tksm -c -a | START EXIT        | ERROR_TYPE=soft-offline
+ksm_madv_hard_later-access    | prepare_ksm | cleanup_ksm | control_ksm | check_ksm_hard_offline |       | | $tksm -H    | START ACCESS EXIT | ERROR_TYPE=madv_hard
+ksm_madv_hard_avoid-access    | prepare_ksm | cleanup_ksm | control_ksm | check_ksm_hard_offline |       | | $tksm -H -a | START EXIT        | ERROR_TYPE=madv_hard
+ksm_madv_soft_later-access    | prepare_ksm | cleanup_ksm | control_ksm | check_ksm_soft_offline |       | | $tksm -S    | START ACCESS EXIT | ERROR_TYPE=madv_soft
+ksm_madv_soft_avoid-access    | prepare_ksm | cleanup_ksm | control_ksm | check_ksm_soft_offline |       | | $tksm -S -a | START EXIT        | ERROR_TYPE=madv_soft

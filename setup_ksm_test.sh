@@ -2,21 +2,20 @@
 
 check_and_define_tp tksm
 
-prepare_ksm_test() {
+prepare_ksm() {
     ksm_on
     show_ksm_params | tee -a ${OFILE}
     save_nr_corrupted_before
-    get_kernel_message_before
+    prepare_system_default
 }
 
-cleanup_ksm_test() {
+cleanup_ksm() {
     save_nr_corrupted_inject
     all_unpoison
     save_nr_corrupted_unpoison
     ksm_off
     show_ksm_params | tee -a ${OFILE}
-    get_kernel_message_after
-    get_kernel_message_diff | tee -a ${OFILE}
+    cleanup_system_default
 }
 
 control_ksm_test() {
@@ -63,8 +62,7 @@ control_ksm_test() {
 }
 
 check_ksm() {
-    check_kernel_message_nobug
-    check_return_code "$EXPECTED_RETURN_CODE"
+    check_system_default
     check_nr_hwcorrupted
 }
 

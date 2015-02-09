@@ -1,5 +1,0 @@
-TEST_PROGRAM="$tksm -c"
-ERROR_TYPE=mce-srao
-TEST_CHECKER=check_ksm_hard_offline
-# MCE SRAO never affect in bios level, so no MCE SRAR should occur in later access
-EXPECTED_RETURN_CODE="START ACCESS EXIT"

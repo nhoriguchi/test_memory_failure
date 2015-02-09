@@ -1,4 +1,0 @@
-TEST_PROGRAM="$tksm -c -a"
-ERROR_TYPE=mce-srao
-TEST_CHECKER=check_ksm_hard_offline
-EXPECTED_RETURN_CODE="START EXIT"

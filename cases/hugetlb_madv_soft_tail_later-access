@@ -1,5 +1,0 @@
-EXPECTED_RETURN_CODE="START ACCESS EXIT"
-TEST_PROGRAM="$thugetlb -S"
-TEST_CHECKER=check_hugetlb_soft_offline
-ERROR_TYPE=madv_soft
-ERROR_OFFSET=1

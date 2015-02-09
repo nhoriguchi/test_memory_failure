@@ -1,4 +1,0 @@
-TEST_PROGRAM="$tksm -S -a"
-ERROR_TYPE=madv_soft
-TEST_CHECKER=check_ksm_soft_offline
-EXPECTED_RETURN_CODE="START EXIT"

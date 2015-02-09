@@ -14,21 +14,20 @@ hva2hpa() {
     $PAGETYPES -Nl -a $1 | grep -v offset | cut -f2
 }
 
-prepare_test() {
+prepare_hugetlb() {
     # TODO: early kill knob?
     # TODO: kill exisiting programs?
     save_nr_corrupted_before
     set_and_check_hugetlb_pool 100
-    get_kernel_message_before
+    prepare_system_default
 }
 
-cleanup_test() {
+cleanup_hugetlb() {
     save_nr_corrupted_inject
     all_unpoison
     set_and_check_hugetlb_pool 0
     save_nr_corrupted_unpoison
-    get_kernel_message_after
-    get_kernel_message_diff | tee -a ${OFILE}
+    prepare_system_default
 }
 
 control_hugetlb() {
@@ -82,9 +81,7 @@ control_hugetlb() {
 }
 
 check_hugetlb_hard_offline() {
-    check_kernel_message -v "failed"
-    check_kernel_message_nobug
-    check_return_code "$EXPECTED_RETURN_CODE"
+    check_system_default
     check_nr_hwcorrupted
 }
 
@@ -142,8 +139,6 @@ control_hugetlb_race() {
 }
 
 check_hugetlb_race() {
-    check_kernel_message -v "failed"
-    check_kernel_message_nobug
-    check_return_code "$EXPECTED_RETURN_CODE"
+    check_system_default
     check_nr_hwcorrupted_consistent
 }

@@ -4,37 +4,4 @@ KERNEL_SRC=/src/linux-dev
 . test_core/lib/setup_hugetlb_base.sh
 . setup_hugetlb_test.sh
 
-DEFAULT_TEST_PREPARE=prepare_test
-DEFAULT_TEST_CLEANUP=cleanup_test
-DEFAULT_TEST_CONTROLLER=control_hugetlb
-
-#!EMBED: cases/hugetlb_mce-srao_head_later-access
-#!EMBED: cases/hugetlb_mce-srao_head_avoid-access
-#!EMBED: cases/hugetlb_mce-srao_tail_later-access
-#!EMBED: cases/hugetlb_mce-srao_tail_avoid-access
-#!EMBED: cases/hugetlb_hard-offline_head_later-access
-#!EMBED: cases/hugetlb_hard-offline_head_avoid-access
-#!EMBED: cases/hugetlb_hard-offline_tail_later-access
-#!EMBED: cases/hugetlb_hard-offline_tail_avoid-access
-#!EMBED: cases/hugetlb_soft-offline_head_later-access
-#!EMBED: cases/hugetlb_soft-offline_head_avoid-access
-#!EMBED: cases/hugetlb_soft-offline_tail_later-access
-#!EMBED: cases/hugetlb_soft-offline_tail_avoid-access
-#!EMBED: cases/hugetlb_madv_hard_head_later-access
-#!EMBED: cases/hugetlb_madv_hard_head_avoid-access
-#!EMBED: cases/hugetlb_madv_hard_tail_later-access
-#!EMBED: cases/hugetlb_madv_hard_tail_avoid-access
-#!EMBED: cases/hugetlb_madv_soft_head_later-access
-#!EMBED: cases/hugetlb_madv_soft_head_avoid-access
-#!EMBED: cases/hugetlb_madv_soft_tail_later-access
-#!EMBED: cases/hugetlb_madv_soft_tail_avoid-access
-
-#
-# Race between multiple errors on free hugepage
-#
-TEST_TITLE="hugetlb_race_on_free_hugepage"
-EXPECTED_RETURN_CODE="START EXIT"
-TEST_CONTROLLER=control_hugetlb_race
-TEST_CHECKER=check_hugetlb_race
-TEST_FLAGS=devel
-do_test_async
+#!TABLE: hugetlb_test.rc.table

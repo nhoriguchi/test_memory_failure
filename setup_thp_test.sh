@@ -4,7 +4,7 @@ check_and_define_tp tthp
 
 ulimit -s unlimited
 
-prepare_test() {
+prepare_thp() {
     echo 1 > /proc/sys/vm/drop_caches
     # echo 1 > /proc/sys/vm/compact_memory
     set_thp_params_for_testing
@@ -24,18 +24,17 @@ prepare_test() {
 
     show_stat_thp | tee -a ${OFILE}
     save_nr_corrupted_before
-    get_kernel_message_before
+    prepare_system_default
 }
 
-cleanup_test() {
+cleanup_thp() {
     save_nr_corrupted_inject
     all_unpoison
     save_nr_corrupted_unpoison
     default_tuning_parameters
     # show_current_tuning_parameters
     show_stat_thp | tee -a ${OFILE}
-    get_kernel_message_after
-    get_kernel_message_diff | tee -a ${OFILE}
+    cleanup_system_default
 }
 
 control_thp() {
@@ -103,9 +102,7 @@ control_thp() {
 }
 
 check_thp_hard_offline() {
-    check_kernel_message -v "failed"
-    check_kernel_message_nobug
-    check_return_code "$EXPECTED_RETURN_CODE"
+    check_system_default
     check_nr_hwcorrupted
 }
 
