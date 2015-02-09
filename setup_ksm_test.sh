@@ -18,7 +18,7 @@ cleanup_ksm() {
     cleanup_system_default
 }
 
-control_ksm_test() {
+control_ksm() {
     local pid="$1"
     local line="$2"
 
