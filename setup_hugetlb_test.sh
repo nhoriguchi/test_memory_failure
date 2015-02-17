@@ -102,39 +102,48 @@ check_hugepage_migrated() {
     fi
 }
 
+DEFAULT_MONARCH_TIMEOUT=1000000
+SYSFS_MCHECK=/sys/devices/system/machinecheck
+set_monarch_timeout() {
+    local value=$1
+
+    find $SYSFS_MCHECK/ -type f -name monarch_timeout | while read line ; do
+        echo $value > $line
+    done
+}
+
+prepare_hugetlb_race() {
+    save_nr_corrupted_before
+    set_and_check_hugetlb_pool 100
+    prepare_system_default
+    set_monarch_timeout $MONARCH_TIMEOUT
+}
+
+cleanup_hugetlb_race() {
+    set_monarch_timeout $DEFAULT_MONARCH_TIMEOUT
+    save_nr_corrupted_inject
+    all_unpoison
+    set_and_check_hugetlb_pool 0
+    save_nr_corrupted_unpoison
+    prepare_system_default
+}
+
+# This test is not well defined because mce-inject tool could cause kernel
+# panic which might be artifact of test infrastructure.
 control_hugetlb_race() {
     local tgthpage=0x$(${PAGETYPES}  -b huge,compound_head,mmap=huge,compound_head -Nl | sed -n -e 4p | cut -f1)
-    echo "echo target hugepage ${tgthpage}"
-    local tgthpage2=$(printf "0x%x" $[${tgthpage} + 3])
-    echo "echo target hugepage ${tgthpage2}"
 
-    #
-    # generating race in simple way
-    #
-    for i in $(seq 10) ; do
-        touch $TMPF.sync
-        ( while [ -e $TMPF.sync ] ; do true ; done ; ${MCEINJECT} -e "mce-srao" -a $tgthpage ) &
-        ( while [ -e $TMPF.sync ] ; do true ; done ; ${MCEINJECT} -e "mce-srao" -a $tgthpage2 ) &
-        sleep 0.1
-        rm $TMPF.sync
-        sleep 0.1
+    touch $TMPF.sync
+    local i=
+    for i in $(seq $NR_THREAD) ; do
+        ( while [ -e $TMPF.sync ] ; do true ; done ; $MCEINJECT -e mce-srao -a $[tgthpage + i] ) &
+        echo $! | tee -a $OFILE
     done
-    $PAGETYPES -b huge,compound_head=huge,compound_head -Nl
 
-    #
-    # iterating MCE injection
-    #
-    ( while true ; do ${PAGETYPES} -b hwpoison -x -N ; done ) &
-    local pid1=$!
-    ( while true ; do ${MCEINJECT} -e "mce-srao" -a $tgthpage ; done ) &
-    local pid2=$!
-    ( while true ; do ${MCEINJECT} -e "mce-srao" -a $tgthpage2 ; done ) &
-    local pid3=$!
     sleep 1
-    $PAGETYPES -b huge,compound_head=huge,compound_head -Nl
-    kill -9 $pid2
-    kill -9 $pid3
-    kill -9 $pid1
+    rm $TMPF.sync
+    sleep 1
+
     set_return_code EXIT
 }
 

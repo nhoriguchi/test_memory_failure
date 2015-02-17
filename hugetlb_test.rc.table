@@ -18,4 +18,4 @@ hugetlb_madv_soft_head_later-access    | prepare_hugetlb | cleanup_hugetlb | con
 hugetlb_madv_soft_head_avoid-access    | prepare_hugetlb | cleanup_hugetlb | control_hugetlb      | check_hugetlb_soft_offline |       | | $thugetlb -S -a | START EXIT          | ERROR_TYPE=madv_soft; ERROR_OFFSET=0
 hugetlb_madv_soft_tail_later-access    | prepare_hugetlb | cleanup_hugetlb | control_hugetlb      | check_hugetlb_soft_offline |       | | $thugetlb -S    | START ACCESS EXIT   | ERROR_TYPE=madv_soft; ERROR_OFFSET=1
 hugetlb_madv_soft_tail_avoid-access    | prepare_hugetlb | cleanup_hugetlb | control_hugetlb      | check_hugetlb_soft_offline |       | | $thugetlb -S -a | START EXIT          | ERROR_TYPE=madv_soft; ERROR_OFFSET=1
-hugetlb_race_on_free_hugepage          | prepare_hugetlb | cleanup_hugetlb | control_hugetlb_race | check_hugetlb_race         | devel | | $thugetlb -S -a | START EXIT          |
+# hugetlb_race_on_free_hugepage          | prepare_hugetlb_race | cleanup_hugetlb_race | control_hugetlb_race | check_hugetlb_race         | devel | | | START EXIT          | NR_THREAD=4; MONARCH_TIMEOUT=8000000
