@@ -2,7 +2,7 @@ CC=gcc
 CFLAGS=-g # -Wall -Wextra
 TESTCASE_FILTER=
 
-src=tthp.c tksm.c thugetlb.c memeater.c memeater_multithread.c
+src=tthp.c tksm.c thugetlb.c memeater.c memeater_multithread.c test_base_madv_simple_stress.c
 exe=$(src:.c=)
 srcdir=.
 dstdir=/usr/local/bin
@@ -31,6 +31,9 @@ clean:
 	  true ; \
 	done
 
+basetest: all
+	bash run-test.sh -v -r base_test.rc -n $@ $(TESTCASE_FILTER)
+
 hugetlbtest: all
 	bash run-test.sh -v -r hugetlb_test.rc -n $@ $(TESTCASE_FILTER)
 
@@ -43,6 +46,6 @@ kvmtest: all
 ksmtest: all
 	bash run-test.sh -v -r ksm_test.rc -n $@ $(TESTCASE_FILTER)
 
-test: hugetlbtest thptest ksmtest
+test: basetest hugetlbtest thptest ksmtest
 
-fulltest: kvmtest thptest kvmtest ksmtest
+fulltest: basetest kvmtest thptest kvmtest ksmtest
