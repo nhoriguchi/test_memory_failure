@@ -1,0 +1,6 @@
+KERNEL_SRC=/src/linux-dev
+. test_core/lib/common.sh
+. test_core/lib/setup_mce_tools.sh
+. setup_base_test.sh
+
+#!TABLE: base_test.rc.table
