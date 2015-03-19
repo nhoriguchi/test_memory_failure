@@ -125,7 +125,7 @@ cleanup_hugetlb_race() {
     all_unpoison
     set_and_check_hugetlb_pool 0
     save_nr_corrupted_unpoison
-    prepare_system_default
+    cleanup_system_default
 }
 
 # This test is not well defined because mce-inject tool could cause kernel
