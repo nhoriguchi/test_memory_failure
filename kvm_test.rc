@@ -1,4 +1,5 @@
 KERNEL_SRC=/src/linux-dev
+. test_core/lib/common.sh
 . test_core/lib/setup_mce_tools.sh
 . test_core/lib/setup_kvm_base.sh
 
