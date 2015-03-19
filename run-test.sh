@@ -1,7 +1,6 @@
 #!/bin/bash
 
 THISDIR=$(dirname $(readlink -f $BASH_SOURCE))
-[ ! -d ${THISDIR}/test_core ] && git clone https://github.com/Naoya-Horiguchi/test_core
 TESTCORE=${THISDIR}/test_core/run-test.sh
 
 RECIPE=""

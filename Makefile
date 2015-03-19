@@ -16,7 +16,7 @@ all: get_test_core $(exe)
 	$(CC) $(CFLAGS) -o $@ $^ $(OPT) $(LIBOPT)
 
 get_test_core:
-	git clone https://github.com/Naoya-Horiguchi/test_core || true
+	@test -d "test_core" || git clone https://github.com/Naoya-Horiguchi/test_core
 	@true
 
 install: $(exe)
