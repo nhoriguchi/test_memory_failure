@@ -30,10 +30,8 @@ vm_restart_if_unconnectable
 
 # send helper tools to guest
 send_helper_to_guest() {
-    ssh $VMIP file $GUESTMEMEATER > /dev/null
-    [ $? -ne 0 ] && scp $MEMEATER $VMIP:$GUESTMEMEATER > /dev/null
-    ssh $VMIP file $GUESTPAGETYPES > /dev/null
-    [ $? -ne 0 ] && scp $PAGETYPES $VMIP:$GUESTPAGETYPES > /dev/null
+    scp $MEMEATER $VMIP:$GUESTMEMEATER > /dev/null
+    scp $PAGETYPES $VMIP:$GUESTPAGETYPES > /dev/null
 }
 
 # define helper functions below
@@ -118,6 +116,7 @@ check_guest_state() {
             echo "And $GUESTMEMEATER still running." | tee -a ${OFILE}
             set_return_code "GUEST_PROC_ALIVE"
             echo "let $GUESTMEMEATER access to error page" | tee -a ${OFILE}
+
             access_error
             if vm_ssh_connectable ; then
                 if guest_process_running ; then
@@ -157,7 +156,7 @@ check_page_migrated() {
     local oldhpa="$2"
 
     count_testcount
-    currenthpa=`ruby ${GPA2HPA}.rb $VM $gpa`
+    currenthpa=$(ruby ${GPA2HPA} $VM $gpa)
     # echo "[$TARGETGPA] [$TARGETHPA] [$currenthpa]"
     if [ ! "$currenthpa" ] ; then
         count_failure "Fail to get HPA after migration."
