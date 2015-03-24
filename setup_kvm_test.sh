@@ -53,9 +53,13 @@ get_gpa_guest_memeater() {
     scp $VMIP:/tmp/mapping /tmp/mapping > /dev/null 2>&1
     local start=$(printf "0x%lx" $[$(sort /tmp/mapping | sort | head -n1)/4096])
     local end=$(printf "0x%lx" $[$(sort /tmp/mapping | sort | tail -n1)/4096 + 256])
-    ssh $VMIP \
-        "$GUESTPAGETYPES -p ${GUESTMEMEATERPID} -b ${flagtype} -rNL -a ${start},${end}" | \
-        grep -v offset | tr '\t' ' ' | tr -s ' ' > ${TMPF}.guest-page-types
+    local cmd="$GUESTPAGETYPES -p ${GUESTMEMEATERPID} -b ${flagtype} -rNL"
+    local line=
+    while read line ; do
+        cmd="$cmd -a $[line/4096]+256"
+    done < /tmp/mapping
+    echo $cmd
+    ssh $VMIP $cmd | grep -v offset | tr '\t' ' ' | tr -s ' ' > ${TMPF}.guest-page-types
     local lines=`wc -l ${TMPF}.guest-page-types | cut -f1 -d' '`
     [ "$lines" -eq 0 ] && echo "Page on pid:$GUESTMEMEATERPID not found." >&2 && return 1
     [ "$lines" -gt 2 ] && lines=`ruby -e "p rand($lines) + 1"`
@@ -88,10 +92,11 @@ prepare_test() {
     TARGETHPA=""
     vm_restart_if_unconnectable
     vmdirty && vm_restart_wait || sleep 1
+    rm -f /tmp/mapping
+    stop_guest_memeater
     send_helper_to_guest
 
     save_nr_corrupted_before
-    stop_guest_memeater
     get_kernel_message_before
     get_guest_kernel_message_before
     run_vm_serial_monitor
@@ -101,6 +106,8 @@ cleanup_test() {
     save_nr_corrupted_inject
     all_unpoison
     save_nr_corrupted_unpoison
+    rm -f /tmp/mapping
+    stop_guest_memeater
     get_kernel_message_after
     get_kernel_message_diff | tee -a ${OFILE}
     vm_ssh_connectable && get_guest_kernel_message_after
@@ -169,6 +176,7 @@ check_page_migrated() {
 
 control_kvm() {
     run_guest_memeater || return 1
+    sleep 0.2
     get_hpa "$TARGET_PAGETYPES" || return 1
     set_return_code "GOT_HPA"
     ${MCEINJECT} -e "$ERROR_TYPE" -a "${TARGETHPA}"

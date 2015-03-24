@@ -27,12 +27,7 @@ void usage(char *str)
 	exit(EXIT_SUCCESS);
 }
 
-void sig_handle(int signo) {
-	int i, j;
-	for (i = 0; i < SEGNR; i++)
-		for (j = 0; j < ALLOCPAGE; j++)
-			p[i][j * PSIZE] = 1;
-}
+void sig_handle(int signo) { ; }
 
 int main(int argc, char **argv) {
 	int fd[4];
@@ -85,10 +80,23 @@ int main(int argc, char **argv) {
 	p[6] = mmap((void*)VADDR+VADDRINT*4, ALLOCBYTE, MMAP_PROT, MAP_PRIVATE, fd[2], 0);
 	p[7] = mmap((void*)VADDR+VADDRINT*5, ALLOCBYTE, MMAP_PROT, MAP_PRIVATE, fd[3], 0);
 
+	/* Forbid readahead, which could kill TP with SIGBUS */
 	for (i = 0; i < SEGNR; i++)
-		for (j = 0; j < ALLOCPAGE; j++)
-			c = p[i][j * PSIZE];
+		madvise(p[i], ALLOCBYTE, MADV_RANDOM);
 
+	/* create dirty/clean pattern */
+	for (i = 0; i < ALLOCPAGE; i++) {
+		c = p[0][i * PSIZE];
+		p[1][i * PSIZE] = rand();
+		c = p[2][i * PSIZE];
+		p[3][i * PSIZE] = rand();
+		c = p[4][i * PSIZE];
+		p[5][i * PSIZE] = rand();
+		c = p[6][i * PSIZE];
+		p[7][i * PSIZE] = rand();
+	}
+
+	signal(SIGUSR1, sig_handle);
 	if (foutpath) {
 		int fdout = open(foutpath, O_RDWR|O_TRUNC|O_CREAT, 0666);
 		char addr[32];
@@ -98,19 +106,17 @@ int main(int argc, char **argv) {
 		}
 		close(fdout);
 	}
-
-	signal(SIGUSR1, sig_handle);
-
-	while (1) {
-		for (i = 0; i < ALLOCPAGE; i++) {
-			c = p[0][i * PSIZE];
-			p[1][i * PSIZE] = rand();
-			c = p[2][i * PSIZE];
-			p[3][i * PSIZE] = rand();
-			c = p[4][i * PSIZE];
-			p[5][i * PSIZE] = rand();
-			c = p[6][i * PSIZE];
-			p[7][i * PSIZE] = rand();
-		}
+	pause();
+	for (i = 0; i < ALLOCPAGE; i++) {
+		c = p[0][i * PSIZE];
+		p[1][i * PSIZE] = rand();
+		c = p[2][i * PSIZE];
+		p[3][i * PSIZE] = rand();
+		c = p[4][i * PSIZE];
+		p[5][i * PSIZE] = rand();
+		c = p[6][i * PSIZE];
+		p[7][i * PSIZE] = rand();
 	}
+	sleep(3);
+	return 0;
 }
