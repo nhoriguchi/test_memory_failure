@@ -1,6 +1,25 @@
 KERNEL_SRC=/src/linux-dev
 . test_core/lib/common.sh
 . test_core/lib/setup_mce_tools.sh
+. test_core/lib/setup_hugetlb_base.sh
 . setup_base_test.sh
 
 #!TABLE: base_test.rc.table
+
+NAMEBASE=poison_unpoison_stress
+TEST_TITLE=base_$NAMEBASE
+TEST_PREPARE=prepare_$NAMEBASE
+TEST_CLEANUP=cleanup_$NAMEBASE
+TEST_CONTROLLER=control_$NAMEBASE
+TEST_CHECKER=check_$NAMEBASE
+EXPECTED_RETURN="START EXIT"
+do_test_async
+
+NAMEBASE=poison_unpoison_stress_hugetlb
+TEST_TITLE=base_$NAMEBASE
+TEST_PREPARE=prepare_$NAMEBASE
+TEST_CLEANUP=cleanup_$NAMEBASE
+TEST_CONTROLLER=control_$NAMEBASE
+TEST_CHECKER=check_$NAMEBASE
+EXPECTED_RETURN="START EXIT"
+do_test_async
