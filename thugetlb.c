@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
 
 	signal(SIGUSR1, sig_handle);
 
-	while ((c = getopt(argc, argv, "avp:HSc")) != -1) {
+	while ((c = getopt(argc, argv, "avp:HScn:")) != -1) {
 		switch (c) {
 		case 'a':
 			avoidtouch = 1;
@@ -72,6 +72,9 @@ int main(int argc, char *argv[])
 			break;
 		case 'c':
 			mceinject = 1;
+			break;
+		case 'n':
+			nr_hps = strtol(optarg, NULL, 10);
 			break;
 		}
 	}
@@ -101,6 +104,7 @@ int main(int argc, char *argv[])
 		pause();
 	} else {
 		printf("No memory error injection\n");
+		pause();
 	}
 
 	if (!avoidtouch) {
