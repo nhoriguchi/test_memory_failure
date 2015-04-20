@@ -107,7 +107,6 @@ check_thp_hard_offline() {
 }
 
 check_thp_soft_offline() {
-    check_thp
     if [ "$ERROR_OFFSET" == 0 ] ; then
         check_page_migrated head
     else
@@ -142,7 +141,8 @@ check_page_migrated() {
         if [ "${before[1]}" = "${after[1]}" ] ; then
             count_failure "tail page not migrated"
         else
-            count_success "tail page migrated"
+            count_success "tail page migrated ${before[1]} => ${after[1]}"
+            ${PAGETYPES} -rl -a 0x${before[1]}
         fi
 
         FALSENEGATIVE=true
