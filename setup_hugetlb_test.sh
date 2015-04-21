@@ -63,7 +63,7 @@ control_hugetlb() {
             set_return_code "ACCESS"
             kill -SIGUSR1 ${pid}
             sleep 0.5
-            ;;        
+            ;;
         "thugetlb exit.")
             ${PAGETYPES} -p ${pid} -rlN -a ${BASEVFN}+1310720 > ${TMPF}.pageflagcheck2
             kill -SIGUSR1 ${pid}
@@ -130,13 +130,36 @@ cleanup_hugetlb_race() {
 
 # This test is not well defined because mce-inject tool could cause kernel
 # panic which might be artifact of test infrastructure.
-control_hugetlb_race() {
-    local tgthpage=0x$(${PAGETYPES}  -b huge,compound_head,mmap=huge,compound_head -Nl | sed -n -e 4p | cut -f1)
+TARGET_PAGEFLAG="huge,compound_head,mmap=huge,compound_head"
+
+control_multiple_inject_race() {
+    local tgthpage="0x$($PAGETYPES -b $TARGET_PAGEFLAG -Nl | sed -n -e 2p | cut -f1)"
+    local injtype=
+
+    if [ ! "$tgthpage" ] ; then
+        echo "no page with specified page flag"
+        set_return_code FAILED_TO_GET_PFN
+        return
+    fi
 
     touch $TMPF.sync
     local i=
     for i in $(seq $NR_THREAD) ; do
-        ( while [ -e $TMPF.sync ] ; do true ; done ; $MCEINJECT -e mce-srao -a $[tgthpage + i] ) &
+        if [ "$INJECT_TYPE" == mce-srao ] || [ "$INJECT_TYPE" == hard-offline ] || [ "$INJECT_TYPE" == soft-offline ] ; then
+            injtype=$INJECT_TYPE
+        elif [ "$INJECT_TYPE" == hard-soft ] ; then
+            if [ "$[$i % 2]" == "0" ] ; then
+                injtype=hard-offline
+            else
+                injtype=soft-offline
+            fi
+        else
+            echo "Invalid INJECT_TYPE"
+            set_return_code INVALID_INJECT_TYPE
+            return
+        fi
+        echo "$MCEINJECT -e $injtype -a $tgthpage" | tee -a $OFILE
+        ( while [ -e $TMPF.sync ] ; do true ; done ; $MCEINJECT -e $injtype -a $tgthpage ) &
         echo $! | tee -a $OFILE
     done
 

@@ -6,16 +6,142 @@ KERNEL_SRC=/src/linux-dev
 
 #!TABLE: hugetlb_test.rc.table
 
-# hugetlb_race_on_free_hugepage          | prepare_hugetlb_race | cleanup_hugetlb_race | control_hugetlb_race | check_hugetlb_race         | devel | | | START EXIT          | NR_THREAD=4; MONARCH_TIMEOUT=8000000
+# INJECT_TYPE=mce-srao
+# TARGET_PAGEFLAG="huge,compound_head,mmap=huge,compound_head"
+# TEST_TITLE=hugetlb_race_on_free_hugepage_mce-srao
+# TEST_PREPARE=prepare_hugetlb_race
+# TEST_CLEANUP=cleanup_hugetlb_race
+# TEST_CONTROLLER=control_multiple_inject_race
+# TEST_CHECKER=check_hugetlb_race
+# TEST_FLAGS=devel
+# TEST_RETRYABLE=
+# EXPECTED_RETURN_CODE="START EXIT"
+# NR_THREAD=4
+# MONARCH_TIMEOUT=2000000
+# do_test_async
 
-TEST_TITLE=hugetlb_race_on_free_hugepage
+TEST_TITLE=hugetlb_race_on_free_hugepage_hard-offline
+INJECT_TYPE=hard-offline
+TARGET_PAGEFLAG="huge,compound_head,mmap=huge,compound_head"
 TEST_PREPARE=prepare_hugetlb_race
 TEST_CLEANUP=cleanup_hugetlb_race
-TEST_CONTROLLER=control_hugetlb_race
+TEST_CONTROLLER=control_multiple_inject_race
 TEST_CHECKER=check_hugetlb_race
 TEST_FLAGS=devel
 TEST_RETRYABLE=
 EXPECTED_RETURN_CODE="START EXIT"
 NR_THREAD=4
-MONARCH_TIMEOUT=8000000 # ??
+MONARCH_TIMEOUT=2000000
+do_test_async
+
+TEST_TITLE=hugetlb_race_on_free_hugepage_soft-offline
+INJECT_TYPE=soft-offline
+TARGET_PAGEFLAG="huge,compound_head,mmap=huge,compound_head"
+TEST_PREPARE=prepare_hugetlb_race
+TEST_CLEANUP=cleanup_hugetlb_race
+TEST_CONTROLLER=control_multiple_inject_race
+TEST_CHECKER=check_hugetlb_race
+TEST_FLAGS=devel
+TEST_RETRYABLE=
+EXPECTED_RETURN_CODE="START EXIT"
+NR_THREAD=4
+MONARCH_TIMEOUT=2000000
+do_test_async
+
+TEST_TITLE=hugetlb_race_on_free_hugepage_hard-soft
+INJECT_TYPE=hard-soft
+TARGET_PAGEFLAG="huge,compound_head,mmap=huge,compound_head"
+TEST_PREPARE=prepare_hugetlb_race
+TEST_CLEANUP=cleanup_hugetlb_race
+TEST_CONTROLLER=control_multiple_inject_race
+TEST_CHECKER=check_hugetlb_race
+TEST_FLAGS=devel
+TEST_RETRYABLE=
+EXPECTED_RETURN_CODE="START EXIT"
+NR_THREAD=4
+MONARCH_TIMEOUT=2000000
+do_test_async
+
+TEST_TITLE=race_on_buddy_hard-offline
+TARGET_PAGEFLAG="buddy"
+INJECT_TYPE=hard-offline
+TEST_PREPARE=prepare_hugetlb_race
+TEST_CLEANUP=cleanup_hugetlb_race
+TEST_CONTROLLER=control_multiple_inject_race
+TEST_CHECKER=check_hugetlb_race
+TEST_FLAGS=devel
+TEST_RETRYABLE=
+EXPECTED_RETURN_CODE="START EXIT"
+NR_THREAD=4
+MONARCH_TIMEOUT=2000000
+do_test_async
+
+TEST_TITLE=race_on_buddy_soft-offline
+TARGET_PAGEFLAG="buddy"
+INJECT_TYPE=soft-offline
+TEST_PREPARE=prepare_hugetlb_race
+TEST_CLEANUP=cleanup_hugetlb_race
+TEST_CONTROLLER=control_multiple_inject_race
+TEST_CHECKER=check_hugetlb_race
+TEST_FLAGS=devel
+TEST_RETRYABLE=
+EXPECTED_RETURN_CODE="START EXIT"
+NR_THREAD=4
+MONARCH_TIMEOUT=2000000
+do_test_async
+
+TEST_TITLE=race_on_buddy_hard-soft
+TARGET_PAGEFLAG="buddy"
+INJECT_TYPE=hard-soft
+TEST_PREPARE=prepare_hugetlb_race
+TEST_CLEANUP=cleanup_hugetlb_race
+TEST_CONTROLLER=control_multiple_inject_race
+TEST_CHECKER=check_hugetlb_race
+TEST_FLAGS=devel
+TEST_RETRYABLE=
+EXPECTED_RETURN_CODE="START EXIT"
+NR_THREAD=4
+MONARCH_TIMEOUT=2000000
+do_test_async
+
+TEST_TITLE=race_on_anonymou_hard-offline
+TARGET_PAGEFLAG=anonymous
+INJECT_TYPE=hard-offline
+TEST_PREPARE=prepare_hugetlb_race
+TEST_CLEANUP=cleanup_hugetlb_race
+TEST_CONTROLLER=control_multiple_inject_race
+TEST_CHECKER=check_hugetlb_race
+TEST_FLAGS=devel
+TEST_RETRYABLE=
+EXPECTED_RETURN_CODE="START EXIT"
+NR_THREAD=4
+MONARCH_TIMEOUT=2000000
+do_test_async
+
+TEST_TITLE=hard-soft_race_anonymous
+TARGET_PAGEFLAG=anonymous
+INJECT_TYPE=soft-offline
+TEST_PREPARE=prepare_hugetlb_race
+TEST_CLEANUP=cleanup_hugetlb_race
+TEST_CONTROLLER=control_multiple_inject_race
+TEST_CHECKER=check_hugetlb_race
+TEST_FLAGS=devel
+TEST_RETRYABLE=
+EXPECTED_RETURN_CODE="START EXIT"
+NR_THREAD=4
+MONARCH_TIMEOUT=2000000
+do_test_async
+
+TEST_TITLE=hard-soft_race_anonymous
+TARGET_PAGEFLAG=anonymous
+INJECT_TYPE=hard-soft
+TEST_PREPARE=prepare_hugetlb_race
+TEST_CLEANUP=cleanup_hugetlb_race
+TEST_CONTROLLER=control_multiple_inject_race
+TEST_CHECKER=check_hugetlb_race
+TEST_FLAGS=devel
+TEST_RETRYABLE=
+EXPECTED_RETURN_CODE="START EXIT"
+NR_THREAD=4
+MONARCH_TIMEOUT=2000000
 do_test_async
