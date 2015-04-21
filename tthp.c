@@ -15,6 +15,7 @@
 int flag = 1;
 
 void sig_handle(int signo) { ; }
+void sig_handle_flag(int signo) { flag = 0; }
 
 void split_thp(char *ptr, int size) {
 	clear_hugepage(ptr, size);
@@ -47,12 +48,13 @@ int main(int argc, char *argv[]) {
 	int split = 0;
 	int rhelmode = 0;
 	int waitms = 0;
+	int busyloop = 0;
 	char tmpbuf[256];
         struct timeval tv;
 	struct pagestat ps;
 	struct pagestat ps_tail;
 
-	while ((c = getopt(argc, argv, "n:w:p:mMHSca:tAPRv")) != -1) {
+	while ((c = getopt(argc, argv, "n:w:p:mMHSca:tAPRvb")) != -1) {
 		switch(c) {
 		case 'n':
 			nr_hps = strtol(optarg, NULL, 10);
@@ -101,6 +103,9 @@ int main(int argc, char *argv[]) {
 			break;
 		case 'v':
 			verbose = 1;
+			break;
+		case 'b':
+			busyloop = 1;
 			break;
 		}
 	}
@@ -189,6 +194,13 @@ int main(int argc, char *argv[]) {
 	} else if (mceinject == 1) {
 		pprintf("waiting for injection from outside\n");
 		pause();
+	} else if (busyloop == 1) {
+		signal(SIGUSR1, sig_handle_flag);
+		pprintf("busyloop start\n");
+		while (flag)
+			for (i = 0; i < nr_hps; i++)
+				thp_addr[i*THPS] = 'x';
+		pprintf("busyloop done\n");
 	} else {
 		printf("No memory error injection\n");
 	}
