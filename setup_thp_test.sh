@@ -1,6 +1,7 @@
 #!/bin/bash
 
 check_and_define_tp tthp
+check_and_define_tp tthp_on_pcplist
 
 ulimit -s unlimited
 
@@ -81,7 +82,7 @@ control_thp() {
             set_return_code "ACCESS"
             kill -SIGUSR1 ${pid}
             sleep 0.5
-            ;;        
+            ;;
         "tthp exit.")
             ${PAGETYPES} -p ${pid} -rlN -a ${BASEVFN}+1310720 > ${TMPF}.pageflagcheck2
             kill -SIGUSR1 ${pid}
@@ -154,4 +155,67 @@ check_page_migrated() {
         fi
         FALSENEGATIVE=false
     fi
+}
+
+
+background_thp_allocator() {
+    while true ; do
+        $tthp_on_pcplist
+    done
+}
+
+STAPPID=
+# Not intended to be used on RHEL6, only for RHEL7/upstream
+prepare_thp_on_pcplist() {
+    STAPPID="$(staprun -o $TMPF.stapout -D filter_memory_error_event.ko)"
+    echo "STAPPID: $STAPPID"
+    [ ! "$STAPPID" ] && return 1
+    echo 1 > /proc/sys/vm/drop_caches
+    set_thp_params_for_testing
+    set_thp_never
+    set_thp_always
+    pkill -9 -f $tthp_on_pcplist 2> /dev/null
+    show_stat_thp | tee -a $OFILE
+    save_nr_corrupted_before
+    prepare_system_default
+}
+
+cleanup_thp_on_pcplist() {
+    save_nr_corrupted_inject
+    all_unpoison
+    save_nr_corrupted_unpoison
+    default_tuning_parameters
+    # show_current_tuning_parameters
+    pkill -9 -f $tthp_on_pcplist 2> /dev/null
+    show_stat_thp | tee -a $OFILE
+    cleanup_system_default
+    kill -9 $STAPPID
+    rmmod filter_memory_error_event
+}
+
+control_thp_on_pcplist() {
+    echo $MCEINJECT -p $pid -e $ERROR_TYPE -a $injpfn | tee -a $OFILE
+    pkill -f background_thp_allocator -9 2>&1 > /dev/null
+
+    background_thp_allocator &
+    local backpid=$!
+    local TARGET_PAGEFLAG="thp,compound_head=thp,compound_head"
+    for i in $(seq 5) ; do
+        echo "[$i] $PAGETYPES -p $(pgrep -f tthp_on_pcplist) -b $TARGET_PAGEFLAG -rNl"
+        $PAGETYPES -p $(pgrep -f tthp_on_pcplist) -b $TARGET_PAGEFLAG -rNl | \
+            grep -v offset | cut -f2 | \
+            while read line ; do
+                local thp=0x$line
+                $MCEINJECT -e $ERROR_TYPE -a $[$thp + 1]
+            done
+    done
+
+    kill -9 $backpid
+    set_return_code EXIT
+}
+
+check_thp_on_pcplist() {
+    check_system_default
+    check_kernel_message -v "huge page recovery"
+    check_nr_hwcorrupted
 }

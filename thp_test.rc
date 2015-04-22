@@ -6,3 +6,16 @@ KERNEL_SRC=/src/linux-dev
 . setup_thp_test.sh
 
 #!TABLE: thp_test.rc.table
+
+# Testing race condition between memory failure and other generic mm code
+# like thp's transition between LRU lists
+TEST_TITLE=thp_on_pcplist
+TEST_PREPARE=prepare_thp_on_pcplist
+TEST_CLEANUP=cleanup_thp_on_pcplist
+TEST_CONTROLLER=control_thp_on_pcplist
+TEST_CHECKER=check_thp_on_pcplist
+EXPECTED_RETURN_CODE="START EXIT"
+TEST_FLAGS=devel
+ERROR_TYPE=hard-offline
+TARGET_PAGEFLAG="thp,anonymous,lru=thp,anonymous"
+do_test_async
