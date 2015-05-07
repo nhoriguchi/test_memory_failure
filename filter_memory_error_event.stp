@@ -1,0 +1,65 @@
+%{
+#include "../../../include/linux/page-flags.h"
+%}
+
+function set_page_hwpoison (page:long) %{
+    struct page *page = (struct page *)STAP_ARG_page;
+    SetPageHWPoison(page);
+%}
+
+function clear_page_hwpoison (page:long) %{
+    struct page *page = (struct page *)STAP_ARG_page;
+    ClearPageHWPoison(page);
+%}
+
+function page_flag:long (val:long) %{
+    STAP_RETVALUE = (long)((struct page *)STAP_ARG_val)->flags;
+%}
+
+function pfn_to_page:long (val:long) %{
+    STAP_RETVALUE = (long)pfn_to_page((unsigned long)STAP_ARG_val);
+%}
+
+function arg1:long () { return register("rdi"); }
+
+function page_dump (page:long) %{
+    struct page *page = (struct page *)STAP_ARG_page;
+    _stp_printf("%lx/%lx %lx/%lx, %lx, %lx\n", page, page_to_pfn(page),
+            page_count(page), page_mapcount(page), page->flags, page->mapping);
+    printk("%p/%lx %d/%d, %lx, %p\n", page, page_to_pfn(page),
+            page_count(page), page_mapcount(page), page->flags, page->mapping);
+%}
+
+global target
+probe kernel.function("memory_failure") {
+    if ((arg1() & 0xffffffffe00) != 0) {
+        page = pfn_to_page(arg1());
+        hpage = pfn_to_page(arg1() & 0xffffffffe00);
+        # checking PageHead and PageLRU (normal thps has both flags set)
+        if ((page_flag(hpage) & 0x4020) != 0x4000) {
+            target = page;
+            set_page_hwpoison(target);
+        }
+    }
+}
+
+probe kernel.function("memory_failure").return {
+    if (target != 0) {
+        clear_page_hwpoison(target);
+        target = 0;
+    }
+}
+
+# probe kernel.function("shake_page") {
+#     page_dump(arg1());
+# }
+# 
+# probe kernel.function("hwpoison_filter") {
+#     printf("%28s %12s %5d %2d: ", ppfunc(), execname(), pid(), cpu());
+#     page_dump(arg1());
+# }
+# 
+# probe kernel.function("hwpoison_user_mappings") {
+#     printf("%28s %12s %5d %2d: ", ppfunc(), execname(), pid(), cpu());
+#     page_dump(arg1());
+# }
