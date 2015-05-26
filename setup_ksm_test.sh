@@ -3,6 +3,9 @@
 check_and_define_tp tksm
 
 prepare_ksm() {
+    if [ "$ERROR_TYPE" = mce-srao ] ; then
+        check_mce_capability || return 1 # MCE SRAO not supported
+    fi
     ksm_on
     show_ksm_params | tee -a ${OFILE}
     save_nr_corrupted_before

@@ -2,7 +2,7 @@ KERNEL_SRC=/src/linux-dev
 . test_core/lib/common.sh
 . test_core/lib/setup_mce_tools.sh
 . test_core/lib/setup_ksm_base.sh
-
+. setup_mce_capability_check.sh
 . setup_ksm_test.sh
 
 #!TABLE: ksm_test.rc.table

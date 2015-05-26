@@ -17,6 +17,9 @@ hva2hpa() {
 prepare_hugetlb() {
     # TODO: early kill knob?
     # TODO: kill exisiting programs?
+    if [ "$ERROR_TYPE" = mce-srao ] ; then
+        check_mce_capability || return 1 # MCE SRAO not supported
+    fi
     save_nr_corrupted_before
     set_and_check_hugetlb_pool 100
     prepare_system_default
@@ -174,3 +177,12 @@ check_hugetlb_race() {
     check_system_default
     check_nr_hwcorrupted_consistent
 }
+
+# prepare_hugetlb_race_between_injection_and_mmap_fault_munmap() {
+# }
+# cleanup_hugetlb_race_between_injection_and_mmap_fault_munmap() {
+# }
+# control_hugetlb_race_between_injection_and_mmap_fault_munmap() {
+# }
+# check_hugetlb_race_between_injection_and_mmap_fault_munmap() {
+# }

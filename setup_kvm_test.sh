@@ -219,3 +219,13 @@ check_kvm_soft_offline() {
     check_page_migrated "$TARGETGPA" "$TARGETHPA"
     check_nr_hwcorrupted
 }
+
+control_kvm_inject_mce_on_qemu_page() {
+    local pid=$(cat /varun/libvirt/qemu/$VM.pid)
+    $PAGETYPES -p $pid -l
+}
+
+check_kvm_inject_mce_on_qemu_page() {
+    check_kernel_message "${TARGETHPA}"
+    check_kernel_message_nobug
+}

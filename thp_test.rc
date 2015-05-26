@@ -2,7 +2,7 @@ KERNEL_SRC=/src/linux-dev
 . test_core/lib/common.sh
 . test_core/lib/setup_mce_tools.sh
 . test_core/lib/setup_thp_base.sh
-
+. setup_mce_capability_check.sh
 . setup_thp_test.sh
 
 #!TABLE: thp_test.rc.table
@@ -14,6 +14,29 @@ TEST_PREPARE=prepare_thp_on_pcplist
 TEST_CLEANUP=cleanup_thp_on_pcplist
 TEST_CONTROLLER=control_thp_on_pcplist
 TEST_CHECKER=check_thp_on_pcplist
+EXPECTED_RETURN_CODE="START EXIT"
+TEST_FLAGS=devel
+ERROR_TYPE=hard-offline
+TARGET_PAGEFLAG="thp,anonymous,lru=thp,anonymous"
+do_test_async
+
+
+TEST_TITLE=race_between_error_handling_and_process_exit
+TEST_PREPARE=prepare_race_between_error_handling_and_process_exit
+TEST_CLEANUP=cleanup_race_between_error_handling_and_process_exit
+TEST_CONTROLLER=control_race_between_error_handling_and_process_exit
+TEST_CHECKER=check_race_between_error_handling_and_process_exit
+EXPECTED_RETURN_CODE="START EXIT"
+TEST_FLAGS=devel
+ERROR_TYPE=hard-offline
+TARGET_PAGEFLAG="thp,anonymous,lru=thp,anonymous"
+do_test_async
+
+TEST_TITLE=race_between_munmap_and_thp_split
+TEST_PREPARE=prepare_race_between_error_handling_and_process_exit
+TEST_CLEANUP=cleanup_race_between_error_handling_and_process_exit
+TEST_CONTROLLER=control_race_between_munmap_and_thp_split
+TEST_CHECKER=check_race_between_error_handling_and_process_exit
 EXPECTED_RETURN_CODE="START EXIT"
 TEST_FLAGS=devel
 ERROR_TYPE=hard-offline

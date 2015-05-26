@@ -2,6 +2,7 @@ KERNEL_SRC=/src/linux-dev
 . test_core/lib/common.sh
 . test_core/lib/setup_mce_tools.sh
 . test_core/lib/setup_hugetlb_base.sh
+. setup_mce_capability_check.sh
 . setup_hugetlb_test.sh
 
 #!TABLE: hugetlb_test.rc.table
@@ -144,4 +145,14 @@ TEST_RETRYABLE=
 EXPECTED_RETURN_CODE="START EXIT"
 NR_THREAD=4
 MONARCH_TIMEOUT=2000000
+do_test_async
+
+TEST_TITLE=hugetlb_race_between_injection_and_mmap_fault_munmap
+TEST_PREPARE=prepare_$TEST_TITLE
+TEST_CLEANUP=cleanup_$TEST_TITLE
+TEST_CONTROLLER=control_$TEST_TITLE
+TEST_CHECKER=check_$TEST_TITLE
+EXPECTED_RETURN_CODE="START EXIT"
+TEST_FLAGS=devel
+ERROR_TYPE=hard-offline
 do_test_async

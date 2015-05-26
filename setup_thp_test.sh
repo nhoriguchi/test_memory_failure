@@ -2,10 +2,15 @@
 
 check_and_define_tp tthp
 check_and_define_tp tthp_on_pcplist
+check_and_define_tp tthp_small
 
 ulimit -s unlimited
 
 prepare_thp() {
+    if [ "$ERROR_TYPE" = mce-srao ] ; then
+        check_mce_capability || return 1 # MCE SRAO not supported
+    fi
+
     echo 1 > /proc/sys/vm/drop_caches
     # echo 1 > /proc/sys/vm/compact_memory
     set_thp_params_for_testing
@@ -175,6 +180,7 @@ prepare_thp_on_pcplist() {
     set_thp_never
     set_thp_always
     pkill -9 -f $tthp_on_pcplist 2> /dev/null
+    pkill -9 -f background_thp_allocator 2>&1 > /dev/null
     show_stat_thp | tee -a $OFILE
     save_nr_corrupted_before
     prepare_system_default
@@ -187,6 +193,7 @@ cleanup_thp_on_pcplist() {
     default_tuning_parameters
     # show_current_tuning_parameters
     pkill -9 -f $tthp_on_pcplist 2> /dev/null
+    pkill -9 -f background_thp_allocator 2>&1 > /dev/null
     show_stat_thp | tee -a $OFILE
     cleanup_system_default
     kill -9 $STAPPID
@@ -194,13 +201,10 @@ cleanup_thp_on_pcplist() {
 }
 
 control_thp_on_pcplist() {
-    echo $MCEINJECT -p $pid -e $ERROR_TYPE -a $injpfn | tee -a $OFILE
-    pkill -f background_thp_allocator -9 2>&1 > /dev/null
-
     background_thp_allocator &
     local backpid=$!
     local TARGET_PAGEFLAG="thp,compound_head=thp,compound_head"
-    for i in $(seq 5) ; do
+    for i in $(seq 10) ; do
         echo "[$i] $PAGETYPES -p $(pgrep -f tthp_on_pcplist) -b $TARGET_PAGEFLAG -rNl"
         $PAGETYPES -p $(pgrep -f tthp_on_pcplist) -b $TARGET_PAGEFLAG -rNl | \
             grep -v offset | cut -f2 | \
@@ -218,4 +222,63 @@ check_thp_on_pcplist() {
     check_system_default
     check_kernel_message -v "huge page recovery"
     check_nr_hwcorrupted
+}
+
+prepare_race_between_error_handling_and_process_exit() {
+    echo 1 > /proc/sys/vm/drop_caches
+    pkill -9 -f $tthp_small 2> /dev/null
+    set_thp_params_for_testing
+    set_thp_never
+    set_thp_always
+    save_nr_corrupted_before
+    all_unpoison
+    prepare_system_default
+}
+
+cleanup_race_between_error_handling_and_process_exit() {
+    save_nr_corrupted_inject
+    all_unpoison
+    save_nr_corrupted_unpoison
+    default_tuning_parameters
+    pkill -9 -f $tthp_small 2> /dev/null
+    cleanup_system_default
+}
+
+control_race_between_error_handling_and_process_exit() {
+    local pid=
+
+    for i in $(seq 10) ; do
+        $tthp_small &
+        pid=$!
+        echo "[$i] $PAGETYPES -p $(pgrep -f tthp_small) -b $TARGET_PAGEFLAG -rNl"
+        $PAGETYPES -p $(pgrep -f tthp_small) -b $TARGET_PAGEFLAG -rNl | \
+            grep -v offset | cut -f2 | \
+            while read line ; do
+                local thp=0x$line
+                printf "$MCEINJECT -e $ERROR_TYPE -a 0x%lx\n" $[$thp + 1]
+                $MCEINJECT -e $ERROR_TYPE -a $[$thp + 1]
+                # $PAGETYPES -a $[$thp + 1] -X -N
+            done
+        kill -9 $pid
+    done
+    set_return_code EXIT
+}
+
+check_race_between_error_handling_and_process_exit() {
+    check_system_default
+    check_nr_hwcorrupted
+}
+
+control_race_between_munmap_and_thp_split() {
+    local pid=
+
+    for i in $(seq 100) ; do
+        $tthp_small &
+        pid=$!
+        sleep 0.3
+        migratepages $pid 0 1
+        migratepages $pid 1 0
+        kill -9 $pid
+    done
+    set_return_code EXIT
 }

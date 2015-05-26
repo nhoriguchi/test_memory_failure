@@ -2,6 +2,7 @@ KERNEL_SRC=/src/linux-dev
 . test_core/lib/common.sh
 . test_core/lib/setup_mce_tools.sh
 . test_core/lib/setup_kvm_base.sh
+. setup_mce_capability_check.sh
 
 # you should give these
 export VM=
@@ -94,4 +95,12 @@ TEST_CONTROLLER=control_kvm_action_required
 TEST_CHECKER=check_kvm_action_required
 EXPECTED_RETURN_CODE="START GOT_HPA GUEST_ALIVE GUEST_PROC_ALIVE GUEST_PROC_ALIVE_LATER_ACCESS TEST"
 TARGET_PAGETYPES="lru,mmap,anonymous=lru,mmap,anonymous"
+do_test_async
+
+
+TEST_TITLE=kvm_inject_mce_on_qemu_page
+TEST_FLAGS=devel
+TEST_CONTROLLER=control_kvm_inject_mce_on_qemu_page
+TEST_CHECKER=check_kvm_inject_mce_on_qemu_page
+EXPECTED_RETURN_CODE="START END"
 do_test_async
