@@ -1,0 +1,15 @@
+%{
+#include "../../../arch/x86/include/asm/msr.h"
+#include "../../../arch/x86/include/uapi/asm/msr-index.h"
+%}
+
+function get_mcgcap() %{
+    u64 cap;
+    rdmsrl(MSR_IA32_MCG_CAP, cap);
+    _stp_printf("MCE_CAPABILITY: 0x%lx\n", cap);
+%}
+
+probe begin {
+    get_mcgcap();
+    exit();
+}
