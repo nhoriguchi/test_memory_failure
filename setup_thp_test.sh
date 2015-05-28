@@ -36,6 +36,7 @@ prepare_thp() {
 cleanup_thp() {
     save_nr_corrupted_inject
     all_unpoison
+    pkill -9 -f $tthp
     save_nr_corrupted_unpoison
     default_tuning_parameters
     # show_current_tuning_parameters

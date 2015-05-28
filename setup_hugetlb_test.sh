@@ -20,6 +20,7 @@ prepare_hugetlb() {
     if [ "$ERROR_TYPE" = mce-srao ] ; then
         check_mce_capability || return 1 # MCE SRAO not supported
     fi
+    pkill -9 -f $thugetlb
     save_nr_corrupted_before
     set_and_check_hugetlb_pool 100
     prepare_system_default
@@ -28,6 +29,7 @@ prepare_hugetlb() {
 cleanup_hugetlb() {
     save_nr_corrupted_inject
     all_unpoison
+    pkill -9 -f $thugetlb
     set_and_check_hugetlb_pool 0
     save_nr_corrupted_unpoison
     prepare_system_default
