@@ -173,6 +173,11 @@ background_thp_allocator() {
 STAPPID=
 # Not intended to be used on RHEL6, only for RHEL7/upstream
 prepare_thp_on_pcplist() {
+    stap -p4 -g -m filter_memory_error_event.ko filter_memory_error_event.stp
+    if [ $? -ne 0 ] ; then
+        echo "Failed to build stap script" >&2
+        return 1
+    fi
     STAPPID="$(staprun -o $TMPF.stapout -D filter_memory_error_event.ko)"
     echo "STAPPID: $STAPPID"
     [ ! "$STAPPID" ] && return 1

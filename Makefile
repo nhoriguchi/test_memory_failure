@@ -10,19 +10,12 @@ srcdir=.
 dstdir=/usr/local/bin
 dstexe=$(addprefix $(dstdir)/,$(exe))
 
-STAP=stap
-STAPRUN=staprun
-
 OPT=-DDEBUG
 LIBOPT=-lpthread #-lnuma # -lcgroup
 
-all: get_test_core $(exe) $(stapexe)
+all: get_test_core $(exe)
 %: %.c
 	$(CC) $(CFLAGS) -o $@ $^ $(OPT) $(LIBOPT)
-
-%.ko: %.stp
-# filter_memory_error_event.ko: filter_memory_error_event.stp
-	$(STAP) -p4 -g -m $@ $^
 
 get_test_core:
 	@test -d "test_core" || git clone https://github.com/Naoya-Horiguchi/test_core
