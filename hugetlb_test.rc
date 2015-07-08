@@ -28,11 +28,13 @@ TEST_PREPARE=prepare_hugetlb_race
 TEST_CLEANUP=cleanup_hugetlb_race
 TEST_CONTROLLER=control_multiple_inject_race
 TEST_CHECKER=check_hugetlb_race
-TEST_FLAGS=devel
+TEST_FLAGS=
 TEST_RETRYABLE=
 EXPECTED_RETURN_CODE="START EXIT"
 NR_THREAD=4
 MONARCH_TIMEOUT=2000000
+FIXEDBY_SUBJECT="mm: soft-offline: don't free target page in successful page migration|mm/memory-failure: introduce get_hwpoison_page() for consistent refcount handling|mm/memory-failure: split thp earlier in memory error handling|mm/hwpoison-inject: check PageLRU of hpage|mm/hwpoison-inject: fix refcounting in no-injection case|mm/memory-failure: call shake_page() when error hits thp tail page|mm: hugetlb: cleanup using paeg_huge_active()|mm: hugetlb: introduce page_huge_active"
+FIXEDBY_PATCH_SEARCH_DATE="Apr 1 2015"
 do_test_async
 
 TEST_TITLE=hugetlb_race_on_free_hugepage_soft-offline
@@ -42,11 +44,13 @@ TEST_PREPARE=prepare_hugetlb_race
 TEST_CLEANUP=cleanup_hugetlb_race
 TEST_CONTROLLER=control_multiple_inject_race
 TEST_CHECKER=check_hugetlb_race
-TEST_FLAGS=devel
+TEST_FLAGS=
 TEST_RETRYABLE=
 EXPECTED_RETURN_CODE="START EXIT"
 NR_THREAD=4
 MONARCH_TIMEOUT=2000000
+FIXEDBY_SUBJECT="mm: soft-offline: don't free target page in successful page migration|mm/memory-failure: introduce get_hwpoison_page() for consistent refcount handling|mm/memory-failure: split thp earlier in memory error handling|mm/hwpoison-inject: check PageLRU of hpage|mm/hwpoison-inject: fix refcounting in no-injection case|mm/memory-failure: call shake_page() when error hits thp tail page|mm: hugetlb: cleanup using paeg_huge_active()|mm: hugetlb: introduce page_huge_active"
+FIXEDBY_PATCH_SEARCH_DATE="Apr 1 2015"
 do_test_async
 
 TEST_TITLE=hugetlb_race_on_free_hugepage_hard-soft
@@ -56,11 +60,13 @@ TEST_PREPARE=prepare_hugetlb_race
 TEST_CLEANUP=cleanup_hugetlb_race
 TEST_CONTROLLER=control_multiple_inject_race
 TEST_CHECKER=check_hugetlb_race
-TEST_FLAGS=devel
+TEST_FLAGS=
 TEST_RETRYABLE=
 EXPECTED_RETURN_CODE="START EXIT"
 NR_THREAD=4
 MONARCH_TIMEOUT=2000000
+FIXEDBY_SUBJECT="mm: soft-offline: don't free target page in successful page migration|mm/memory-failure: introduce get_hwpoison_page() for consistent refcount handling|mm/memory-failure: split thp earlier in memory error handling|mm/hwpoison-inject: check PageLRU of hpage|mm/hwpoison-inject: fix refcounting in no-injection case|mm/memory-failure: call shake_page() when error hits thp tail page|mm: hugetlb: cleanup using paeg_huge_active()|mm: hugetlb: introduce page_huge_active"
+FIXEDBY_PATCH_SEARCH_DATE="Apr 1 2015"
 do_test_async
 
 TEST_TITLE=race_on_buddy_hard-offline
@@ -70,11 +76,13 @@ TEST_PREPARE=prepare_hugetlb_race
 TEST_CLEANUP=cleanup_hugetlb_race
 TEST_CONTROLLER=control_multiple_inject_race
 TEST_CHECKER=check_hugetlb_race
-TEST_FLAGS=devel
+TEST_FLAGS=
 TEST_RETRYABLE=
 EXPECTED_RETURN_CODE="START EXIT"
 NR_THREAD=4
 MONARCH_TIMEOUT=2000000
+FIXEDBY_SUBJECT="mm: soft-offline: don't free target page in successful page migration|mm/memory-failure: introduce get_hwpoison_page() for consistent refcount handling|mm/memory-failure: split thp earlier in memory error handling|mm/hwpoison-inject: check PageLRU of hpage|mm/hwpoison-inject: fix refcounting in no-injection case|mm/memory-failure: call shake_page() when error hits thp tail page|mm: hugetlb: cleanup using paeg_huge_active()|mm: hugetlb: introduce page_huge_active"
+FIXEDBY_PATCH_SEARCH_DATE="Apr 1 2015"
 do_test_async
 
 TEST_TITLE=race_on_buddy_soft-offline
@@ -84,11 +92,13 @@ TEST_PREPARE=prepare_hugetlb_race
 TEST_CLEANUP=cleanup_hugetlb_race
 TEST_CONTROLLER=control_multiple_inject_race
 TEST_CHECKER=check_hugetlb_race
-TEST_FLAGS=devel
+TEST_FLAGS=
 TEST_RETRYABLE=
 EXPECTED_RETURN_CODE="START EXIT"
 NR_THREAD=4
 MONARCH_TIMEOUT=2000000
+FIXEDBY_SUBJECT="mm: soft-offline: don't free target page in successful page migration|mm/memory-failure: introduce get_hwpoison_page() for consistent refcount handling|mm/memory-failure: split thp earlier in memory error handling|mm/hwpoison-inject: check PageLRU of hpage|mm/hwpoison-inject: fix refcounting in no-injection case|mm/memory-failure: call shake_page() when error hits thp tail page|mm: hugetlb: cleanup using paeg_huge_active()|mm: hugetlb: introduce page_huge_active"
+FIXEDBY_PATCH_SEARCH_DATE="Apr 1 2015"
 do_test_async
 
 TEST_TITLE=race_on_buddy_hard-soft
@@ -98,11 +108,13 @@ TEST_PREPARE=prepare_hugetlb_race
 TEST_CLEANUP=cleanup_hugetlb_race
 TEST_CONTROLLER=control_multiple_inject_race
 TEST_CHECKER=check_hugetlb_race
-TEST_FLAGS=devel
+TEST_FLAGS=
 TEST_RETRYABLE=
 EXPECTED_RETURN_CODE="START EXIT"
 NR_THREAD=4
 MONARCH_TIMEOUT=2000000
+FIXEDBY_SUBJECT="mm: soft-offline: don't free target page in successful page migration|mm/memory-failure: introduce get_hwpoison_page() for consistent refcount handling|mm/memory-failure: split thp earlier in memory error handling|mm/hwpoison-inject: check PageLRU of hpage|mm/hwpoison-inject: fix refcounting in no-injection case|mm/memory-failure: call shake_page() when error hits thp tail page|mm: hugetlb: cleanup using paeg_huge_active()|mm: hugetlb: introduce page_huge_active"
+FIXEDBY_PATCH_SEARCH_DATE="Apr 1 2015"
 do_test_async
 
 TEST_TITLE=race_on_anonymou_hard-offline
@@ -112,11 +124,13 @@ TEST_PREPARE=prepare_hugetlb_race
 TEST_CLEANUP=cleanup_hugetlb_race
 TEST_CONTROLLER=control_multiple_inject_race
 TEST_CHECKER=check_hugetlb_race
-TEST_FLAGS=devel
+TEST_FLAGS=
 TEST_RETRYABLE=
 EXPECTED_RETURN_CODE="START EXIT"
 NR_THREAD=4
 MONARCH_TIMEOUT=2000000
+FIXEDBY_SUBJECT="mm: soft-offline: don't free target page in successful page migration|mm/memory-failure: introduce get_hwpoison_page() for consistent refcount handling|mm/memory-failure: split thp earlier in memory error handling|mm/hwpoison-inject: check PageLRU of hpage|mm/hwpoison-inject: fix refcounting in no-injection case|mm/memory-failure: call shake_page() when error hits thp tail page|mm: hugetlb: cleanup using paeg_huge_active()|mm: hugetlb: introduce page_huge_active"
+FIXEDBY_PATCH_SEARCH_DATE="Apr 1 2015"
 do_test_async
 
 TEST_TITLE=hard-soft_race_anonymous
@@ -126,11 +140,13 @@ TEST_PREPARE=prepare_hugetlb_race
 TEST_CLEANUP=cleanup_hugetlb_race
 TEST_CONTROLLER=control_multiple_inject_race
 TEST_CHECKER=check_hugetlb_race
-TEST_FLAGS=devel
+TEST_FLAGS=
 TEST_RETRYABLE=
 EXPECTED_RETURN_CODE="START EXIT"
 NR_THREAD=4
 MONARCH_TIMEOUT=2000000
+FIXEDBY_SUBJECT="mm: soft-offline: don't free target page in successful page migration|mm/memory-failure: introduce get_hwpoison_page() for consistent refcount handling|mm/memory-failure: split thp earlier in memory error handling|mm/hwpoison-inject: check PageLRU of hpage|mm/hwpoison-inject: fix refcounting in no-injection case|mm/memory-failure: call shake_page() when error hits thp tail page|mm: hugetlb: cleanup using paeg_huge_active()|mm: hugetlb: introduce page_huge_active"
+FIXEDBY_PATCH_SEARCH_DATE="Apr 1 2015"
 do_test_async
 
 TEST_TITLE=hard-soft_race_anonymous
@@ -140,11 +156,13 @@ TEST_PREPARE=prepare_hugetlb_race
 TEST_CLEANUP=cleanup_hugetlb_race
 TEST_CONTROLLER=control_multiple_inject_race
 TEST_CHECKER=check_hugetlb_race
-TEST_FLAGS=devel
+TEST_FLAGS=
 TEST_RETRYABLE=
 EXPECTED_RETURN_CODE="START EXIT"
 NR_THREAD=4
 MONARCH_TIMEOUT=2000000
+FIXEDBY_SUBJECT="mm: soft-offline: don't free target page in successful page migration|mm/memory-failure: introduce get_hwpoison_page() for consistent refcount handling|mm/memory-failure: split thp earlier in memory error handling|mm/hwpoison-inject: check PageLRU of hpage|mm/hwpoison-inject: fix refcounting in no-injection case|mm/memory-failure: call shake_page() when error hits thp tail page|mm: hugetlb: cleanup using paeg_huge_active()|mm: hugetlb: introduce page_huge_active"
+FIXEDBY_PATCH_SEARCH_DATE="Apr 1 2015"
 do_test_async
 
 TEST_TITLE=hugetlb_race_between_injection_and_mmap_fault_munmap
@@ -153,6 +171,8 @@ TEST_CLEANUP=cleanup_$TEST_TITLE
 TEST_CONTROLLER=control_$TEST_TITLE
 TEST_CHECKER=check_$TEST_TITLE
 EXPECTED_RETURN_CODE="START EXIT"
-TEST_FLAGS=devel
+TEST_FLAGS=
 ERROR_TYPE=hard-offline
+FIXEDBY_SUBJECT="mm: soft-offline: don't free target page in successful page migration|mm/memory-failure: introduce get_hwpoison_page() for consistent refcount handling|mm/memory-failure: split thp earlier in memory error handling|mm/hwpoison-inject: check PageLRU of hpage|mm/hwpoison-inject: fix refcounting in no-injection case|mm/memory-failure: call shake_page() when error hits thp tail page|mm: hugetlb: cleanup using paeg_huge_active()|mm: hugetlb: introduce page_huge_active"
+FIXEDBY_PATCH_SEARCH_DATE="Apr 1 2015"
 do_test_async
