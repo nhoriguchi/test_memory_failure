@@ -22,7 +22,7 @@ FIXEDBY_SUBJECT="mm: soft-offline: don't free target page in successful page mig
 FIXEDBY_PATCH_SEARCH_DATE="Apr 1 2015"
 do_test_async
 
-TEST_TITLE=race_between_error_handling_and_process_exit
+TEST_TITLE=race_between_hard_offline_and_process_exit
 TEST_PREPARE=prepare_race_between_error_handling_and_process_exit
 TEST_CLEANUP=cleanup_race_between_error_handling_and_process_exit
 TEST_CONTROLLER=control_race_between_error_handling_and_process_exit
@@ -30,6 +30,19 @@ TEST_CHECKER=check_race_between_error_handling_and_process_exit
 EXPECTED_RETURN_CODE="START EXIT"
 TEST_FLAGS=
 ERROR_TYPE=hard-offline
+TARGET_PAGEFLAG="thp,anonymous,lru=thp,anonymous"
+FIXEDBY_SUBJECT="mm: soft-offline: don't free target page in successful page migration|mm/memory-failure: introduce get_hwpoison_page() for consistent refcount handling|mm/memory-failure: split thp earlier in memory error handling|mm/hwpoison-inject: check PageLRU of hpage|mm/hwpoison-inject: fix refcounting in no-injection case|mm/memory-failure: call shake_page() when error hits thp tail page|mm: hugetlb: cleanup using paeg_huge_active()|mm: hugetlb: introduce page_huge_active"
+FIXEDBY_PATCH_SEARCH_DATE="Apr 1 2015"
+do_test_async
+
+TEST_TITLE=race_between_soft_offline_and_process_exit
+TEST_PREPARE=prepare_race_between_error_handling_and_process_exit
+TEST_CLEANUP=cleanup_race_between_error_handling_and_process_exit
+TEST_CONTROLLER=control_race_between_error_handling_and_process_exit
+TEST_CHECKER=check_race_between_error_handling_and_process_exit
+EXPECTED_RETURN_CODE="START EXIT"
+TEST_FLAGS=
+ERROR_TYPE=soft-offline
 TARGET_PAGEFLAG="thp,anonymous,lru=thp,anonymous"
 FIXEDBY_SUBJECT="mm: soft-offline: don't free target page in successful page migration|mm/memory-failure: introduce get_hwpoison_page() for consistent refcount handling|mm/memory-failure: split thp earlier in memory error handling|mm/hwpoison-inject: check PageLRU of hpage|mm/hwpoison-inject: fix refcounting in no-injection case|mm/memory-failure: call shake_page() when error hits thp tail page|mm: hugetlb: cleanup using paeg_huge_active()|mm: hugetlb: introduce page_huge_active"
 FIXEDBY_PATCH_SEARCH_DATE="Apr 1 2015"
