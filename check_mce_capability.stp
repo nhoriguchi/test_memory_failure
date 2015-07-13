@@ -1,7 +1,9 @@
 %{
 #include "../../../arch/x86/include/asm/msr.h"
-#include "../../../arch/x86/include/uapi/asm/msr-index.h"
 %}
+
+# This is not necessary since v4.2-rc1
+# #include "../../../arch/x86/include/uapi/asm/msr-index.h"
 
 function get_mcgcap() %{
     u64 cap;
