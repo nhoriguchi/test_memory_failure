@@ -72,7 +72,7 @@ control_poison_unpoison_stress() {
 
     $memeater -f /tmp/mapping &
     pid=$!
-    sleep 0.1 # ensure that memeater reached internal pause()
+    sleep 1 # ensure that memeater reached internal pause()
 
     random_poison $pid &
     pid_poison=$!
