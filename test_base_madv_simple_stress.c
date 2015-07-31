@@ -68,7 +68,7 @@ int main(int argc, char **argv) {
 			injtype = (i + j) % 2 ? MADV_HWPOISON : MADV_SOFT_OFFLINE;
 			ret = madvise(p[j] + i * PS, PS, injtype);
 			if (ret < 0)
-				fprintf(stderr, "madvise(%d) to p[%d] + %d PS failed",
+				fprintf(stderr, "madvise(%d) to p[%d] + %d PS failed\n",
 					injtype, j, i);
 		}
 	}
