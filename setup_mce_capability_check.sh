@@ -1,4 +1,8 @@
 check_mce_capability() {
+	# If user explicitly said the system support MCE_SER, let's believe it.
+	if [ "$MCE_SER_SUPPORTED" ] ; then
+		return 0
+	fi
     if [ ! -e check_mce_capability.ko ] ; then
         stap -p4 -g -m check_mce_capability.ko check_mce_capability.stp
         if [ $? -ne 0 ] ; then
