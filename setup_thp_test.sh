@@ -252,10 +252,11 @@ cleanup_race_between_error_handling_and_process_exit() {
     cleanup_system_default
 }
 
+RACE_ITERATIONS=10
 control_race_between_error_handling_and_process_exit() {
     local pid=
 
-    for i in $(seq 10) ; do
+    for i in $(seq $RACE_ITERATIONS) ; do
         $tthp_small &
         pid=$!
         echo "[$i] $PAGETYPES -p $(pgrep -f tthp_small) -b $TARGET_PAGEFLAG -rNl"
