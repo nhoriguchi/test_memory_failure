@@ -90,6 +90,11 @@ prepare_test() {
     TARGETGVA=""
     TARGETGPA=""
     TARGETHPA=""
+
+    if [ "$ERROR_TYPE" = mce-srao ] ; then
+        check_mce_capability || return 1 # MCE SRAO not supported
+    fi
+
     vm_restart_if_unconnectable
     vmdirty && vm_restart_wait || sleep 1
     rm -f /tmp/mapping
