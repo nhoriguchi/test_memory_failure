@@ -35,6 +35,21 @@ FIXEDBY_SUBJECT="mm: soft-offline: don't free target page in successful page mig
 FIXEDBY_PATCH_SEARCH_DATE="Apr 1 2015"
 do_test_async
 
+
+### THIS is temporaly testcase
+TEST_TITLE=tmp_race_between_hard_offline_and_process_exit
+TEST_PREPARE=prepare_race_between_error_handling_and_process_exit
+TEST_CLEANUP=cleanup_race_between_error_handling_and_process_exit
+TEST_CONTROLLER=control_race_between_error_handling_and_process_exit
+TEST_CHECKER=check_race_between_error_handling_and_process_exit
+EXPECTED_RETURN_CODE="START EXIT"
+TEST_FLAGS=devel
+ERROR_TYPE=hard-offline
+RACE_ITERATIONS=1
+TARGET_PAGEFLAG="thp,anonymous,lru=thp,anonymous,lru"
+do_test_async
+
+
 TEST_TITLE=race_between_soft_offline_and_process_exit
 TEST_PREPARE=prepare_race_between_error_handling_and_process_exit
 TEST_CLEANUP=cleanup_race_between_error_handling_and_process_exit
