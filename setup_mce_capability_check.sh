@@ -2,7 +2,13 @@ check_mce_capability() {
 	# If user explicitly said the system support MCE_SER, let's believe it.
 	if [ "$MCE_SER_SUPPORTED" ] ; then
 		return 0
+	else
+		echo "If you really do mce-srao testcase, please define environment"
+		echo "variable MCE_SER_SUPPORTED"
+		return 1
 	fi
+
+	# TODO: need more elegant solution
     if [ ! -e check_mce_capability.ko ] ; then
         stap -p4 -g -m check_mce_capability.ko check_mce_capability.stp
         if [ $? -ne 0 ] ; then
