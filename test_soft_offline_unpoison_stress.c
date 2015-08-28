@@ -15,13 +15,13 @@ int main(int argc, char *argv[])
 	if (argc > 1 && !strcmp(argv[1], "hugetlb")) {
 		p = mmap(NULL, 0x200000, PROT_READ|PROT_WRITE,
 			 MAP_PRIVATE|MAP_ANONYMOUS|MAP_HUGETLB, -1, 0);
-		if (p == -1)
+		if (p == MAP_FAILED)
 			perror("mmap");
 		printf("use hugetlb %p\n", p);
 		memset(p, 'c', 0x200000);
 	} else {
 		p = malloc(len);
-		if (p == 0)
+		if (!p)
 			perror("malloc");
 	}
 
