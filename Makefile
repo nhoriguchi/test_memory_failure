@@ -59,4 +59,6 @@ multiinjtest: all
 
 test: basetest hugetlbtest thptest ksmtest
 
-fulltest: basetest kvmtest thptest kvmtest ksmtest stresstest multiinjtest
+hightest: multiinjtest stresstest
+
+fulltest: basetest hugetlbtest thptest ksmtest kvmtest multiinjtest stresstest
