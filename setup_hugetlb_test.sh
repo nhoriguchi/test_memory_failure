@@ -9,6 +9,7 @@ if [ ! -d "${HUGETLBDIR}" ] ; then
 fi
 
 check_and_define_tp thugetlb
+check_and_define_tp memeater_hugetlb
 
 hva2hpa() {
     $PAGETYPES -Nl -a $1 | grep -v offset | cut -f2
@@ -107,77 +108,16 @@ check_hugepage_migrated() {
     fi
 }
 
-DEFAULT_MONARCH_TIMEOUT=1000000
-SYSFS_MCHECK=/sys/devices/system/machinecheck
-set_monarch_timeout() {
-    local value=$1
-
-    find $SYSFS_MCHECK/ -type f -name monarch_timeout | while read line ; do
-        echo $value > $line
-    done
-}
-
 prepare_hugetlb_race() {
-    save_nr_corrupted_before
     set_and_check_hugetlb_pool 100
-    prepare_system_default
-    set_monarch_timeout $MONARCH_TIMEOUT
+	$memeater_hugetlb -n 30 &
+	prepare_multiple_injection_race
 }
 
 cleanup_hugetlb_race() {
-    set_monarch_timeout $DEFAULT_MONARCH_TIMEOUT
-    save_nr_corrupted_inject
-    all_unpoison
+	pkill -f $memeater_hugetlb
+	cleanup_multiple_injection_race
     set_and_check_hugetlb_pool 0
-    save_nr_corrupted_unpoison
-    cleanup_system_default
-}
-
-# This test is not well defined because mce-inject tool could cause kernel
-# panic which might be artifact of test infrastructure.
-TARGET_PAGEFLAG="huge,compound_head,mmap=huge,compound_head"
-
-control_multiple_inject_race() {
-    local tgthpage="0x$($PAGETYPES -b $TARGET_PAGEFLAG -Nl | sed -n -e 2p | cut -f1)"
-    local injtype=
-
-    if [ ! "$tgthpage" ] ; then
-        echo "no page with specified page flag"
-        set_return_code FAILED_TO_GET_PFN
-        return
-    fi
-
-    touch $TMPF.sync
-    local i=
-    for i in $(seq $NR_THREAD) ; do
-        if [ "$INJECT_TYPE" == mce-srao ] || [ "$INJECT_TYPE" == hard-offline ] || [ "$INJECT_TYPE" == soft-offline ] ; then
-            injtype=$INJECT_TYPE
-        elif [ "$INJECT_TYPE" == hard-soft ] ; then
-            if [ "$[$i % 2]" == "0" ] ; then
-                injtype=hard-offline
-            else
-                injtype=soft-offline
-            fi
-        else
-            echo "Invalid INJECT_TYPE"
-            set_return_code INVALID_INJECT_TYPE
-            return
-        fi
-        echo "$MCEINJECT -e $injtype -a $tgthpage" | tee -a $OFILE
-        ( while [ -e $TMPF.sync ] ; do true ; done ; $MCEINJECT -e $injtype -a $tgthpage ) &
-        echo $! | tee -a $OFILE
-    done
-
-    sleep 1
-    rm $TMPF.sync
-    sleep 1
-
-    set_return_code EXIT
-}
-
-check_hugetlb_race() {
-    check_system_default
-    check_nr_hwcorrupted_consistent
 }
 
 # prepare_hugetlb_race_between_injection_and_mmap_fault_munmap() {

@@ -2,7 +2,7 @@ CC=gcc
 CFLAGS=-g # -Wall -Wextra
 TESTCASE_FILTER=
 
-src=tthp.c tksm.c thugetlb.c memeater.c memeater_multithread.c test_base_madv_simple_stress.c tthp_on_pcplist.c tthp_small.c test_soft_offline_unpoison_stress.c
+src=tthp.c tksm.c thugetlb.c memeater.c memeater_multithread.c test_base_madv_simple_stress.c tthp_on_pcplist.c tthp_small.c test_soft_offline_unpoison_stress.c memeater_hugetlb.c
 exe=$(src:.c=)
 stapsrc=filter_memory_error_event.stp check_mce_capability.stp
 stapexe=$(stapsrc:.stp=.ko)
@@ -51,6 +51,12 @@ tmpkvmtest: all
 ksmtest: all
 	bash run-test.sh -v -r ksm_test.rc -n $@ $(TESTCASE_FILTER)
 
+stresstest: all
+	bash run-test.sh -v -r stress_test.rc -n $@ $(TESTCASE_FILTER)
+
+multiinjtest: all
+	bash run-test.sh -v -r multiple_injection.rc -n $@ $(TESTCASE_FILTER)
+
 test: basetest hugetlbtest thptest ksmtest
 
-fulltest: basetest kvmtest thptest kvmtest ksmtest
+fulltest: basetest kvmtest thptest kvmtest ksmtest stresstest multiinjtest

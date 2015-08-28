@@ -3,15 +3,15 @@ check_and_define_tp memeater
 check_and_define_tp thugetlb
 check_and_define_tp test_soft_offline_unpoison_stress
 
-prepare_madv_simple_stress() {
+prepare_stress_madvise() {
     prepare_system_default
 }
 
-cleanup_madv_simple_stress() {
+cleanup_stress_madvise() {
     cleanup_system_default
 }
 
-control_madv_simple_stress() {
+control_stress_madvise() {
     local i=
     for i in $(seq 10) ; do
         $test_base_madv_simple_stress | tee -a $OFILE
@@ -20,16 +20,16 @@ control_madv_simple_stress() {
     set_return_code EXIT
 }
 
-check_madv_simple_stress() {
+check_stress_madvise() {
     check_system_default
 }
 
-prepare_poison_unpoison_stress() {
+prepare_stress_poison_unpoison_process() {
     pkill -SIGKILL -f $memeater
     prepare_system_default
 }
 
-cleanup_poison_unpoison_stress() {
+cleanup_stress_poison_unpoison_process() {
     cleanup_system_default
     pkill -SIGKILL -f $memeater
 }
@@ -65,7 +65,7 @@ random_unpoison() {
     done
 }
 
-control_poison_unpoison_stress() {
+control_stress_poison_unpoison_process() {
     local pid=
     local pid_poison=
     local pid_unpoison=
@@ -85,17 +85,17 @@ control_poison_unpoison_stress() {
     set_return_code EXIT
 }
 
-check_poison_unpoison_stress() {
+check_stress_poison_unpoison_process() {
     check_system_default
 }
 
-prepare_poison_unpoison_stress_hugetlb() {
+prepare_stress_poison_unpoison_hugetlb() {
     pkill -SIGKILL -f $thugetlb
     set_and_check_hugetlb_pool 200
     prepare_system_default
 }
 
-cleanup_poison_unpoison_stress_hugetlb() {
+cleanup_stress_poison_unpoison_hugetlb() {
     # all_unpoison
     # set_and_check_hugetlb_pool 0
     cleanup_system_default
@@ -123,7 +123,7 @@ random_unpoison_hugetlb() {
     done
 }
 
-control_poison_unpoison_stress_hugetlb() {
+control_stress_poison_unpoison_hugetlb() {
     local pid=
     local pid_poison=
     local pid_unpoison=
@@ -143,7 +143,7 @@ control_poison_unpoison_stress_hugetlb() {
     set_return_code EXIT
 }
 
-check_poison_unpoison_stress_hugetlb() {
+check_stress_poison_unpoison_hugetlb() {
     check_system_default
 }
 
@@ -164,16 +164,16 @@ reonline_memblocks() {
     done
 }
 
-prepare_memory_hotremove_pageblock_with_hwpoison() {
+prepare_base_memory_hotremove_pageblock_with_hwpoison() {
     prepare_system_default
 }
 
-cleanup_memory_hotremove_pageblock_with_hwpoison() {
+cleanup_base_memory_hotremove_pageblock_with_hwpoison() {
 	reonline_memblocks
     cleanup_system_default
 }
 
-control_memory_hotremove_pageblock_with_hwpoison() {
+control_base_memory_hotremove_pageblock_with_hwpoison() {
 	bash $TRDIR/find_perferred_pageblock_for_hotremove.sh | tee $WDIR/preferred_pageblock
 	local preferred_memblk=$(grep "^preferred memblk:" $WDIR/preferred_pageblock | awk '{print $3}')
 	local preferred_memblk_pfn=$(grep "^preferred memblk start pfn:" $WDIR/preferred_pageblock | awk '{print $5}')
@@ -193,42 +193,38 @@ control_memory_hotremove_pageblock_with_hwpoison() {
 	set_return_code EXIT
 }
 
-check_memory_hotremove_pageblock_with_hwpoison() {
+check_base_memory_hotremove_pageblock_with_hwpoison() {
     check_system_default
 }
 
-prepare_soft_offline_unpoison_stress() {
+prepare_base_soft_offline_unpoison_stress() {
     pkill -SIGKILL -f $test_soft_offline_unpoison_stress
 	all_unpoison
 	prepare_system_default
 }
 
-cleanup_soft_offline_unpoison_stress() {
+cleanup_base_soft_offline_unpoison_stress() {
     pkill -SIGKILL -f $test_soft_offline_unpoison_stress
 	all_unpoison
 	cleanup_system_default
 }
 
-control_soft_offline_unpoison_stress() {
+control_base_soft_offline_unpoison_stress() {
 	$test_soft_offline_unpoison_stress &
 	local pid=$!
-	local iteration=100
+	local count=1000
 
-	while true ; do 
-		local count=1000
-		while true ; do
-			$PAGETYPES -x -N
-			count=$[count-1]
-			[ "$count" -eq 0 ] && break
-		done
-		$PAGETYPES -x -N
-		iteration=$[iteration-1]
-		[ "$iteration" -eq 0 ] && break
+	while true ; do
+		echo "### $count ### $PAGETYPES -b hwpoison -x -N"
+		$PAGETYPES -b hwpoison -x -N
+		count=$[count-1]
+		[ "$count" -eq 0 ] && break
 	done
 
+	kill -9 $pid
 	set_return_code EXIT
 }
 
-check_soft_offline_unpoison_stress() {
+check_base_soft_offline_unpoison_stress() {
 	check_system_default
 }
