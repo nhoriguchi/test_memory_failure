@@ -19,7 +19,7 @@ all: get_test_core $(exe)
 	$(CC) $(CFLAGS) -o $@ $^ $(OPT) $(LIBOPT)
 
 get_test_core:
-	@test ! -d "test_core" && test -f install.sh && bash install.sh
+	@test ! -d "test_core" && test -f install.sh && bash install.sh || true
 	@test -d "test_core" || git clone https://github.com/Naoya-Horiguchi/test_core
 	@true
 
