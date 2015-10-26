@@ -34,11 +34,24 @@ check_multiple_injection_race() {
 }
 
 __control_multiple_injection_race() {
-    local tgthpage="0x$($PAGETYPES -b $TARGET_PAGEFLAG -NL | grep -v X | sed -n -e 2p | cut -f1)"
+	$PAGETYPES -b $TARGET_PAGEFLAG -rNl | grep -v X | grep -v offset > $TMPF.page-types
+	local nr_lines=$(cat $TMPF.page-types | wc -l)
+	if [ "$nr_lines" -eq 0 ] ; then
+        echo "no page with page flag $TARGET_PAGEFLAG found"
+        set_return_code FAILED_TO_GET_PFN
+        return 1
+	fi
+	# cat $TMPF.page-types
+	echo "nr_lines: $nr_lines"
+	local no_line=$[($RANDOM % $nr_lines) + 1]
+    local tgthpage="0x$(sed -ne ${no_line}p $TMPF.page-types | cut -f1)"
+    # local tgthpage="0x$($PAGETYPES -b $TARGET_PAGEFLAG -rNL | grep -v X | sed -n -e 2p | cut -f1)"
     local injtype=
 
     if [ "$tgthpage" == 0x ] ; then
         echo "no page with specified page flag"
+		echo "$PAGETYPES -b $TARGET_PAGEFLAG -rNl"
+		$PAGETYPES -b $TARGET_PAGEFLAG -rNl
         set_return_code FAILED_TO_GET_PFN
         return 1
     fi
