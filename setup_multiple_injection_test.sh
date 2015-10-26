@@ -72,8 +72,13 @@ __control_multiple_injection_race() {
             set_return_code INVALID_INJECT_TYPE
             return 1
         fi
-        echo "$MCEINJECT -e $injtype -a $tgthpage" | tee -a $OFILE
-        ( while [ -e $TMPF.sync ] ; do true ; done ; $MCEINJECT -e $injtype -a $tgthpage ) &
+		if [ "$DIFFERENT_PFNS" == true ] ; then
+			echo "$MCEINJECT -e $injtype -a $[tgthpage + i]" | tee -a $OFILE
+			( while [ -e $TMPF.sync ] ; do true ; done ; $MCEINJECT -e $injtype -a $[tgthpage + i]) &
+		else
+			echo "$MCEINJECT -e $injtype -a $tgthpage" | tee -a $OFILE
+			( while [ -e $TMPF.sync ] ; do true ; done ; $MCEINJECT -e $injtype -a $tgthpage ) &
+		fi
         echo $! | tee -a $OFILE
     done
 

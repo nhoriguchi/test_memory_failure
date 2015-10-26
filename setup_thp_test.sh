@@ -298,14 +298,16 @@ prepare_multiple_injection_thp() {
     set_thp_params_for_testing
     set_thp_never
     set_thp_always
-    pkill -9 -f $tthp_small $memeater_thp
+    pkill -9 -f $tthp_small
+    pkill -9 -f $memeater_thp
 	$tthp_small &
 	$memeater_thp -n 200 &
 	prepare_multiple_injection_race
 }
 
 cleanup_multiple_injection_thp() {
-    pkill -9 -f $tthp_small $memeater_thp
+    pkill -9 -f $tthp_small
+    pkill -9 -f $memeater_thp
 	cleanup_multiple_injection_race
 }
 

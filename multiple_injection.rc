@@ -238,6 +238,49 @@ TEST_RETRYABLE=
 EXPECTED_RETURN_CODE="START EXIT"
 do_test_async
 
+DIFFERENT_PFNS=true
+
+TEST_TITLE=multiple_injection_thp_hard-offline_different_pfns
+INJECT_TYPE=hard-offline
+TARGET_PAGEFLAG="thp,compound_head=thp,compound_head"
+TEST_PREPARE=prepare_multiple_injection_thp
+TEST_CLEANUP=cleanup_multiple_injection_thp
+TEST_CONTROLLER=control_multiple_injection_race
+TEST_CHECKER=check_multiple_injection_race
+TEST_FLAGS=devel
+TEST_RETRYABLE=
+EXPECTED_RETURN_CODE="START EXIT"
+do_test_async
+
+DIFFERENT_PFNS=true
+
+TEST_TITLE=multiple_injection_thp_soft-offline_different_pfns
+INJECT_TYPE=soft-offline
+TARGET_PAGEFLAG="thp,compound_head=thp,compound_head"
+TEST_PREPARE=prepare_multiple_injection_thp
+TEST_CLEANUP=cleanup_multiple_injection_thp
+TEST_CONTROLLER=control_multiple_injection_race
+TEST_CHECKER=check_multiple_injection_race
+TEST_FLAGS=devel
+TEST_RETRYABLE=
+EXPECTED_RETURN_CODE="START EXIT"
+do_test_async
+
+DIFFERENT_PFNS=true
+
+TEST_TITLE=multiple_injection_thp_hard-soft_different_pfns
+INJECT_TYPE=hard-soft
+TARGET_PAGEFLAG="thp,compound_head=thp,compound_head"
+TEST_PREPARE=prepare_multiple_injection_thp
+TEST_CLEANUP=cleanup_multiple_injection_thp
+TEST_CONTROLLER=control_multiple_injection_race
+TEST_CHECKER=check_multiple_injection_race
+TEST_FLAGS=devel
+TEST_RETRYABLE=
+EXPECTED_RETURN_CODE="START EXIT"
+do_test_async
+unset DIFFERENT_PFNS
+
 MULTIINJ_ITERATIONS=30
 
 TEST_TITLE=multiple_injection_thp_hard-offline_background
@@ -275,3 +318,4 @@ TEST_FLAGS=devel
 TEST_RETRYABLE=
 EXPECTED_RETURN_CODE="START EXIT"
 do_test_async
+
