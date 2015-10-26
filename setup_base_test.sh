@@ -1,6 +1,7 @@
 check_and_define_tp memeater
 check_and_define_tp thugetlb
 check_and_define_tp test_soft_offline_unpoison_stress
+check_and_define_tp test_zero_page
 
 NUMNODE=$(numactl -H | grep available | cut -f2 -d' ')
 
@@ -50,4 +51,105 @@ control_base_memory_hotremove_pageblock_with_hwpoison() {
 
 check_base_memory_hotremove_pageblock_with_hwpoison() {
     check_system_default
+}
+
+
+prepare_base_zero_page() {
+	prepare_system_default
+}
+
+cleanup_base_zero_page() {
+	cleanup_system_default
+}
+
+control_base_zero_page() {
+    local pid="$1"
+    local line="$2"
+
+    local injpfn="$[BASEVFN + ERROR_OFFSET]"
+
+    echo "$line" | tee -a $OFILE
+    case "$line" in
+        "zero page allocated.")
+            echo "$PAGETYPES -p $pid -b zero -l" | tee -a $OFILE
+            $PAGETYPES -p $pid -b zero -a 0x700000000+10 -Nl | tee -a $OFILE | grep -v voffset > $TMPF.zero
+			zero_pfn=0x$(grep ^700000000 $TMPF.zero | awk '{print $2}')
+			if [ "$zero_pfn" == 0x ] ; then
+				set_return_code FAILED_ZEROPAGE_ALLOCATION
+			else
+				set_return_code PASSED_ZEROPAGE_ALLOCATION
+				$MCEINJECT -p $pid -e $ERROR_TYPE -a 0x700000000
+				$PAGETYPES -p $pid -b zero -a 0x700000000+10 -Nl | tee -a $OFILE
+			fi
+            kill -SIGUSR1 $pid
+            ;;
+        "test_zero_page exit.")
+            kill -SIGUSR1 $pid
+            set_return_code "EXIT"
+            return 0
+            ;;
+        "PROCESS_KILLED")
+            set_return_code "KILLED"
+            return 0
+            ;;
+        *)
+            ;;
+    esac
+    return 1
+}
+
+check_base_zero_page() {
+	check_system_default
+}
+
+DEFAULT_THP=
+prepare_base_huge_zero_page() {
+	DEFAULT_THP=$(get_thp)
+	set_thp_always
+	prepare_system_default
+}
+
+cleanup_base_huge_zero_page() {
+	cleanup_system_default
+	echo "$DEFAULT_THP" > $THPDIR/enabled
+}
+
+control_base_huge_zero_page() {
+    local pid="$1"
+    local line="$2"
+
+    local injpfn="$[BASEVFN + ERROR_OFFSET]"
+
+    echo "$line" | tee -a $OFILE
+    case "$line" in
+        "zero page allocated.")
+            echo "$PAGETYPES -p $pid -b zero -l" | tee -a $OFILE
+            $PAGETYPES -p $pid -b zero,thp=zero,thp -a 0x700000000+512 -l | tee -a $OFILE | grep -v voffset > $TMPF.zero
+			zero_pfn=0x$(grep ^700000000 $TMPF.zero | awk '{print $2}')
+			if [ "$zero_pfn" == 0x ] ; then
+				set_return_code FAILED_ZEROPAGE_ALLOCATION
+			else
+				set_return_code PASSED_ZEROPAGE_ALLOCATION
+				$MCEINJECT -p $pid -e $ERROR_TYPE -a 0x700000000
+				$PAGETYPES -p $pid -b zero -a 0x700000000+512 -l | tee -a $OFILE
+			fi
+            kill -SIGUSR1 $pid
+            ;;
+        "test_zero_page exit.")
+            kill -SIGUSR1 $pid
+            set_return_code "EXIT"
+            return 0
+            ;;
+        "PROCESS_KILLED")
+            set_return_code "KILLED"
+            return 0
+            ;;
+        *)
+            ;;
+    esac
+    return 1
+}
+
+check_base_huge_zero_page() {
+	check_system_default
 }

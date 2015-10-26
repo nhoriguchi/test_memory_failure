@@ -1,7 +1,10 @@
 KERNEL_SRC=/src/linux-dev
 . test_core/lib/common.sh
 . test_core/lib/setup_mce_tools.sh
+. test_core/lib/setup_thp_base.sh
+. setup_mce_capability_check.sh
 . setup_base_test.sh
+. setup_thp_test.sh
 
 TEST_TITLE=base_memory_hotremove_pageblock_with_hwpoison
 TEST_PREPARE=prepare_$TEST_TITLE
@@ -11,3 +14,25 @@ TEST_CHECKER=check_$TEST_TITLE
 EXPECTED_RETURN_CODE="START HOTREMOVE_SUCCESS EXIT"
 TEST_FLAGS=devel
 do_test_async
+
+TEST_TITLE=base_zero_page
+TEST_PREPARE=prepare_$TEST_TITLE
+TEST_CLEANUP=cleanup_$TEST_TITLE
+TEST_CONTROLLER=control_$TEST_TITLE
+TEST_CHECKER=check_$TEST_TITLE
+TEST_PROGRAM="$test_zero_page"
+ERROR_TYPE=mce-srao
+EXPECTED_RETURN_CODE="START PASSED_ZEROPAGE_ALLOCATION EXIT"
+TEST_FLAGS=devel
+do_test_sync
+
+TEST_TITLE=base_huge_zero_page
+TEST_PREPARE=prepare_$TEST_TITLE
+TEST_CLEANUP=cleanup_$TEST_TITLE
+TEST_CONTROLLER=control_$TEST_TITLE
+TEST_CHECKER=check_$TEST_TITLE
+TEST_PROGRAM="$test_zero_page -n 512"
+ERROR_TYPE=mce-srao
+EXPECTED_RETURN_CODE="START PASSED_ZEROPAGE_ALLOCATION EXIT"
+TEST_FLAGS=devel
+do_test_sync
