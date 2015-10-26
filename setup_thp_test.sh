@@ -3,6 +3,7 @@
 check_and_define_tp tthp
 check_and_define_tp tthp_on_pcplist
 check_and_define_tp tthp_small
+check_and_define_tp memeater_thp
 
 ulimit -s unlimited
 
@@ -290,4 +291,47 @@ control_race_between_munmap_and_thp_split() {
         kill -9 $pid
     done
     set_return_code EXIT
+}
+
+prepare_multiple_injection_thp() {
+    echo 1 > /proc/sys/vm/drop_caches
+    set_thp_params_for_testing
+    set_thp_never
+    set_thp_always
+    pkill -9 -f $tthp_small $memeater_thp
+	$tthp_small &
+	$memeater_thp -n 200 &
+	prepare_multiple_injection_race
+}
+
+cleanup_multiple_injection_thp() {
+    pkill -9 -f $tthp_small $memeater_thp
+	cleanup_multiple_injection_race
+}
+
+run_kernel_build_background() {
+	pushd $KERNEL_SRC
+	make mrproper > /dev/null
+	make defconfig > /dev/null
+	make -j $(nproc) > /dev/null
+	popd
+}
+
+__run_kernel_build_background_pid=
+
+prepare_multiple_injection_thp_background() {
+    echo 1 > /proc/sys/vm/drop_caches
+    set_thp_params_for_testing
+    set_thp_never
+    set_thp_always
+    pkill -9 -f run_kernel_build_background
+	run_kernel_build_background &
+	__run_kernel_build_background_pid=$!
+	prepare_multiple_injection_race
+}
+
+cleanup_multiple_injection_thp_background() {
+    kill -9 $__run_kernel_build_background_pid
+	pkill -9 make
+	cleanup_multiple_injection_race
 }

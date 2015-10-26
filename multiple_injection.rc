@@ -2,8 +2,10 @@ KERNEL_SRC=/src/linux-dev
 . test_core/lib/common.sh
 . test_core/lib/setup_mce_tools.sh
 . test_core/lib/setup_hugetlb_base.sh
+. test_core/lib/setup_thp_base.sh
 . setup_multiple_injection_test.sh
 . setup_hugetlb_test.sh
+. setup_thp_test.sh
 
 NR_THREAD=4
 MONARCH_TIMEOUT=2000000
@@ -12,7 +14,6 @@ MULTIINJ_ITERATIONS=10
 #
 # buddy
 #
-
 TEST_TITLE=multiple_injection_buddy_hard-offline
 TARGET_PAGEFLAG="buddy"
 INJECT_TYPE=hard-offline
@@ -194,6 +195,83 @@ TEST_CLEANUP=cleanup_hugetlb_race
 TEST_CONTROLLER=control_multiple_injection_race
 TEST_CHECKER=check_multiple_injection_race
 TEST_FLAGS=
+TEST_RETRYABLE=
+EXPECTED_RETURN_CODE="START EXIT"
+do_test_async
+
+#
+# thp
+#
+TEST_TITLE=multiple_injection_thp_hard-offline
+INJECT_TYPE=hard-offline
+TARGET_PAGEFLAG="thp=thp"
+TEST_PREPARE=prepare_multiple_injection_thp
+TEST_CLEANUP=cleanup_multiple_injection_thp
+TEST_CONTROLLER=control_multiple_injection_race
+TEST_CHECKER=check_multiple_injection_race
+TEST_FLAGS=devel
+TEST_RETRYABLE=
+EXPECTED_RETURN_CODE="START EXIT"
+do_test_async
+
+TEST_TITLE=multiple_injection_thp_soft-offline
+INJECT_TYPE=soft-offline
+TARGET_PAGEFLAG="thp=thp"
+TEST_PREPARE=prepare_multiple_injection_thp
+TEST_CLEANUP=cleanup_multiple_injection_thp
+TEST_CONTROLLER=control_multiple_injection_race
+TEST_CHECKER=check_multiple_injection_race
+TEST_FLAGS=devel
+TEST_RETRYABLE=
+EXPECTED_RETURN_CODE="START EXIT"
+do_test_async
+
+TEST_TITLE=multiple_injection_thp_hard-soft
+INJECT_TYPE=hard-soft
+TARGET_PAGEFLAG="thp=thp"
+TEST_PREPARE=prepare_multiple_injection_thp
+TEST_CLEANUP=cleanup_multiple_injection_thp
+TEST_CONTROLLER=control_multiple_injection_race
+TEST_CHECKER=check_multiple_injection_race
+TEST_FLAGS=devel
+TEST_RETRYABLE=
+EXPECTED_RETURN_CODE="START EXIT"
+do_test_async
+
+MULTIINJ_ITERATIONS=30
+
+TEST_TITLE=multiple_injection_thp_hard-offline_background
+INJECT_TYPE=hard-offline
+TARGET_PAGEFLAG="thp=thp"
+TEST_PREPARE=prepare_multiple_injection_thp_background
+TEST_CLEANUP=cleanup_multiple_injection_thp_background
+TEST_CONTROLLER=control_multiple_injection_race
+TEST_CHECKER=check_multiple_injection_race
+TEST_FLAGS=devel
+TEST_RETRYABLE=
+EXPECTED_RETURN_CODE="START EXIT"
+do_test_async
+
+TEST_TITLE=multiple_injection_thp_soft-offline_background
+INJECT_TYPE=soft-offline
+TARGET_PAGEFLAG="thp=thp"
+TEST_PREPARE=prepare_multiple_injection_thp_background
+TEST_CLEANUP=cleanup_multiple_injection_thp_background
+TEST_CONTROLLER=control_multiple_injection_race
+TEST_CHECKER=check_multiple_injection_race
+TEST_FLAGS=devel
+TEST_RETRYABLE=
+EXPECTED_RETURN_CODE="START EXIT"
+do_test_async
+
+TEST_TITLE=multiple_injection_thp_hard-soft_background
+INJECT_TYPE=hard-soft
+TARGET_PAGEFLAG="thp=thp"
+TEST_PREPARE=prepare_multiple_injection_thp_background
+TEST_CLEANUP=cleanup_multiple_injection_thp_background
+TEST_CONTROLLER=control_multiple_injection_race
+TEST_CHECKER=check_multiple_injection_race
+TEST_FLAGS=devel
 TEST_RETRYABLE=
 EXPECTED_RETURN_CODE="START EXIT"
 do_test_async

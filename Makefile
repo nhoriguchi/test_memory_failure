@@ -3,7 +3,7 @@ CC=gcc
 CFLAGS=-g # -Wall -Wextra
 TESTCASE_FILTER=
 
-src=tthp.c tksm.c thugetlb.c memeater.c memeater_multithread.c test_base_madv_simple_stress.c tthp_on_pcplist.c tthp_small.c test_soft_offline_unpoison_stress.c memeater_hugetlb.c
+src=tthp.c tksm.c thugetlb.c memeater.c memeater_multithread.c test_base_madv_simple_stress.c tthp_on_pcplist.c tthp_small.c test_soft_offline_unpoison_stress.c memeater_hugetlb.c test_zero_page.c memeater_thp.c
 exe=$(src:.c=)
 stapsrc=filter_memory_error_event.stp check_mce_capability.stp
 stapexe=$(stapsrc:.stp=.ko)
