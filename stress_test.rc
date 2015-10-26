@@ -2,39 +2,34 @@ KERNEL_SRC=/src/linux-dev
 . test_core/lib/common.sh
 . test_core/lib/setup_mce_tools.sh
 . test_core/lib/setup_hugetlb_base.sh
+. setup_mce_capability_check.sh
+. setup_thp_test.sh
 . setup_base_test.sh
-. setup_multiple_injection_race.sh
+. setup_multiple_injection_test.sh
 . setup_stress_test.sh
 
-TEST_TITLE=stress_madvice
+# Testing race condition between memory failure and other generic mm code
+# like thp's transition between LRU lists
+TEST_TITLE=thp_on_pcplist
+TEST_PREPARE=prepare_thp_on_pcplist
+TEST_CLEANUP=cleanup_thp_on_pcplist
+TEST_CONTROLLER=control_thp_on_pcplist
+TEST_CHECKER=check_thp_on_pcplist
+EXPECTED_RETURN_CODE="START EXIT"
+TEST_FLAGS=
+ERROR_TYPE=hard-offline
+TARGET_PAGEFLAG="thp,anonymous,lru=thp,anonymous"
+FIXEDBY_SUBJECT="mm: soft-offline: don't free target page in successful page migration|mm/memory-failure: introduce get_hwpoison_page() for consistent refcount handling|mm/memory-failure: split thp earlier in memory error handling|mm/hwpoison-inject: check PageLRU of hpage|mm/hwpoison-inject: fix refcounting in no-injection case|mm/memory-failure: call shake_page() when error hits thp tail page|mm: hugetlb: cleanup using paeg_huge_active()|mm: hugetlb: introduce page_huge_active"
+FIXEDBY_PATCH_SEARCH_DATE="Apr 1 2015"
+do_test_async
+
+TEST_TITLE=stress_madvise
 TEST_PREPARE=prepare_$TEST_TITLE
 TEST_CLEANUP=cleanup_$TEST_TITLE
 TEST_CONTROLLER=control_$TEST_TITLE
 TEST_CHECKER=check_$TEST_TITLE
 TEST_FLAGS=
 EXPECTED_RETURN_CODE="START EXIT"
-do_test_async
-
-TEST_TITLE=stress_poison_unpoison_process
-TEST_PREPARE=prepare_$TEST_TITLE
-TEST_CLEANUP=cleanup_$TEST_TITLE
-TEST_CONTROLLER=control_$TEST_TITLE
-TEST_CHECKER=check_$TEST_TITLE
-EXPECTED_RETURN_CODE="START EXIT"
-TEST_FLAGS=devel
-FIXEDBY_SUBJECT="mm: soft-offline: don't free target page in successful page migration|mm/memory-failure: introduce get_hwpoison_page() for consistent refcount handling|mm/memory-failure: split thp earlier in memory error handling|mm/hwpoison-inject: check PageLRU of hpage|mm/hwpoison-inject: fix refcounting in no-injection case|mm/memory-failure: call shake_page() when error hits thp tail page|mm: hugetlb: cleanup using paeg_huge_active()|mm: hugetlb: introduce page_huge_active"
-FIXEDBY_PATCH_SEARCH_DATE="Apr 1 2015"
-do_test_async
-
-TEST_TITLE=stress_poison_unpoison_hugetlb
-TEST_PREPARE=prepare_$TEST_TITLE
-TEST_CLEANUP=cleanup_$TEST_TITLE
-TEST_CONTROLLER=control_$TEST_TITLE
-TEST_CHECKER=check_$TEST_TITLE
-EXPECTED_RETURN_CODE="START EXIT"
-TEST_FLAGS=devel
-FIXEDBY_SUBJECT="mm: soft-offline: don't free target page in successful page migration|mm/memory-failure: introduce get_hwpoison_page() for consistent refcount handling|mm/memory-failure: split thp earlier in memory error handling|mm/hwpoison-inject: check PageLRU of hpage|mm/hwpoison-inject: fix refcounting in no-injection case|mm/memory-failure: call shake_page() when error hits thp tail page|mm: hugetlb: cleanup using paeg_huge_active()|mm: hugetlb: introduce page_huge_active"
-FIXEDBY_PATCH_SEARCH_DATE="Apr 1 2015"
 do_test_async
 
 TEST_TITLE=stress_poison_unpoison_pfn
@@ -64,4 +59,26 @@ TEST_CONTROLLER=control_$TEST_TITLE
 TEST_CHECKER=check_$TEST_TITLE
 EXPECTED_RETURN_CODE="START EXIT"
 TEST_FLAGS=devel
+do_test_async
+
+TEST_TITLE=stress_poison_unpoison_process
+TEST_PREPARE=prepare_$TEST_TITLE
+TEST_CLEANUP=cleanup_$TEST_TITLE
+TEST_CONTROLLER=control_$TEST_TITLE
+TEST_CHECKER=check_$TEST_TITLE
+EXPECTED_RETURN_CODE="START EXIT"
+TEST_FLAGS=devel
+FIXEDBY_SUBJECT="mm: soft-offline: don't free target page in successful page migration|mm/memory-failure: introduce get_hwpoison_page() for consistent refcount handling|mm/memory-failure: split thp earlier in memory error handling|mm/hwpoison-inject: check PageLRU of hpage|mm/hwpoison-inject: fix refcounting in no-injection case|mm/memory-failure: call shake_page() when error hits thp tail page|mm: hugetlb: cleanup using paeg_huge_active()|mm: hugetlb: introduce page_huge_active"
+FIXEDBY_PATCH_SEARCH_DATE="Apr 1 2015"
+do_test_async
+
+TEST_TITLE=stress_poison_unpoison_hugetlb
+TEST_PREPARE=prepare_$TEST_TITLE
+TEST_CLEANUP=cleanup_$TEST_TITLE
+TEST_CONTROLLER=control_$TEST_TITLE
+TEST_CHECKER=check_$TEST_TITLE
+EXPECTED_RETURN_CODE="START EXIT"
+TEST_FLAGS=devel
+FIXEDBY_SUBJECT="mm: soft-offline: don't free target page in successful page migration|mm/memory-failure: introduce get_hwpoison_page() for consistent refcount handling|mm/memory-failure: split thp earlier in memory error handling|mm/hwpoison-inject: check PageLRU of hpage|mm/hwpoison-inject: fix refcounting in no-injection case|mm/memory-failure: call shake_page() when error hits thp tail page|mm: hugetlb: cleanup using paeg_huge_active()|mm: hugetlb: introduce page_huge_active"
+FIXEDBY_PATCH_SEARCH_DATE="Apr 1 2015"
 do_test_async
