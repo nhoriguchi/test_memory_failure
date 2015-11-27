@@ -44,7 +44,7 @@ control_hugetlb() {
     echo "$line" | tee -a ${OFILE}
     case "$line" in
         "waiting for injection from outside")
-            ${PAGETYPES} -p ${pid} -rlN -a ${BASEVFN}+1310720 > ${TMPF}.pageflagcheck1
+            ${PAGETYPES} -p ${pid} -rlN -a ${BASEVFN}+1310720 | tee ${TMPF}.pageflagcheck1
             ${PAGETYPES} -p ${pid} -a ${BASEVFN} | grep huge > /dev/null 2>&1
             if [ $? -ne 0 ] ; then
                 echo "Target address is NOT hugepage." | tee -a $OFILE
@@ -53,12 +53,13 @@ control_hugetlb() {
                 return 0
             fi
             # cat /proc/${pid}/numa_maps | tee -a ${OFILE}
-            printf "Inject MCE ($ERROR_TYPE) to %lx.\n" $injpfn | tee -a $OFILE
+            printf "Inject MCE ($ERROR_TYPE) to %lx.\n" $injpfn | tee -a $OFILE >&2
             ${MCEINJECT} -p ${pid} -e ${ERROR_TYPE} -a ${injpfn} # 2>&1
             kill -SIGUSR1 ${pid}
             ;;
         "error injection with madvise")
             # tell cmd the page offset into which error is injected
+            ${PAGETYPES} -p ${pid} -rlN -a ${BASEVFN}+1310720 | tee ${TMPF}.pageflagcheck1
             echo ${ERROR_OFFSET} > ${PIPE}
             kill -SIGUSR1 ${pid}
             ;;
@@ -70,9 +71,9 @@ control_hugetlb() {
             kill -SIGUSR1 ${pid}
             sleep 0.5
             ;;
-        "thugetlb exit.")
-            ${PAGETYPES} -p ${pid} -rlN -a ${BASEVFN}+1310720 > ${TMPF}.pageflagcheck2
-            kill -SIGUSR1 ${pid}
+        "thugetlb_exit")
+            ${PAGETYPES} -p ${pid} -rlN -a ${BASEVFN}+1310720 | tee ${TMPF}.pageflagcheck2
+             kill -SIGUSR1 ${pid}
             set_return_code "EXIT"
             return 0
             ;;
@@ -101,10 +102,14 @@ check_hugepage_migrated() {
     local after=($(sed -ne '2,$p' ${TMPF}.pageflagcheck2 | cut -f2 | tr '\n' ' '))
 
     count_testcount "hugepage migration?"
-    if [ x"${before[0]}" != x"${after[0]}" ] && [ x"${before[1]}" != x"${after[1]}" ] ; then
+	echo "[${before[0]}]"
+	echo "[${after[0]}]"
+	if [ ! "${before[0]}" ] || [ ! "${after[0]}" ] ; then
+        count_failure "failed to get pfn (before:${before[0]}, after:${after[0]})"
+    elif [ x"${before[0]}" != x"${after[0]}" ] && [ x"${before[1]}" != x"${after[1]}" ] ; then
         count_success "hugepage migrated (${before[0]} -> ${after[0]})"
     else
-        count_failure "hugepage not migrated"
+        count_failure "hugepage not migrated (${before[0]} -> ${after[0]})"
     fi
 }
 
