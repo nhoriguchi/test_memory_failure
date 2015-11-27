@@ -14,6 +14,7 @@ TEST_CONTROLLER=control_race_between_error_handling_and_process_exit
 TEST_CHECKER=check_race_between_error_handling_and_process_exit
 EXPECTED_RETURN_CODE="START EXIT"
 TEST_FLAGS=
+TEST_RETRYABLE=3
 ERROR_TYPE=hard-offline
 TARGET_PAGEFLAG="thp,anonymous,lru=thp,anonymous"
 FIXEDBY_SUBJECT="mm: soft-offline: don't free target page in successful page migration|mm/memory-failure: introduce get_hwpoison_page() for consistent refcount handling|mm/memory-failure: split thp earlier in memory error handling|mm/hwpoison-inject: check PageLRU of hpage|mm/hwpoison-inject: fix refcounting in no-injection case|mm/memory-failure: call shake_page() when error hits thp tail page|mm: hugetlb: cleanup using paeg_huge_active()|mm: hugetlb: introduce page_huge_active"
@@ -29,6 +30,7 @@ TEST_CONTROLLER=control_race_between_error_handling_and_process_exit
 TEST_CHECKER=check_race_between_error_handling_and_process_exit
 EXPECTED_RETURN_CODE="START EXIT"
 TEST_FLAGS=devel
+TEST_RETRYABLE=3
 ERROR_TYPE=hard-offline
 RACE_ITERATIONS=1
 TARGET_PAGEFLAG="thp,anonymous,lru=thp,anonymous,lru"
@@ -42,6 +44,7 @@ TEST_CONTROLLER=control_race_between_error_handling_and_process_exit
 TEST_CHECKER=check_race_between_error_handling_and_process_exit
 EXPECTED_RETURN_CODE="START EXIT"
 TEST_FLAGS=
+TEST_RETRYABLE=3
 ERROR_TYPE=soft-offline
 TARGET_PAGEFLAG="thp,anonymous,lru=thp,anonymous"
 FIXEDBY_SUBJECT="mm: soft-offline: don't free target page in successful page migration|mm/memory-failure: introduce get_hwpoison_page() for consistent refcount handling|mm/memory-failure: split thp earlier in memory error handling|mm/hwpoison-inject: check PageLRU of hpage|mm/hwpoison-inject: fix refcounting in no-injection case|mm/memory-failure: call shake_page() when error hits thp tail page|mm: hugetlb: cleanup using paeg_huge_active()|mm: hugetlb: introduce page_huge_active"
@@ -55,6 +58,7 @@ TEST_CONTROLLER=control_race_between_munmap_and_thp_split
 TEST_CHECKER=check_race_between_error_handling_and_process_exit
 EXPECTED_RETURN_CODE="START EXIT"
 TEST_FLAGS=devel
+TEST_RETRYABLE=3
 ERROR_TYPE=hard-offline
 TARGET_PAGEFLAG="thp,anonymous,lru=thp,anonymous"
 do_test_async
